@@ -521,26 +521,40 @@ export function buildMessages(persona, question, priorRoundSummary, roundNumber)
 }
 
 export async function callLLM(messages, apiKey, model = "gpt-4o-mini") {
+  const body = {
+    model,
+    messages,
+    max_completion_tokens: model === 'gpt-5-mini' ? 2000 : 300,
+    ...(model !== 'gpt-5-mini' && { temperature: 0.7 }),
+  };
   const response = await fetch("https://singapore-sim-proxy.sikka-arshin.workers.dev", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      model,
-      messages,
-      max_tokens: 300,
-      temperature: 0.7,
-    }),
+    body: JSON.stringify(body),
   });
 
+  console.log('Status:', response.status);
+  const rawText = await response.text();
+  console.log('Raw response:', rawText);
+
   if (!response.ok) {
+    if (model === "gpt-5-mini" && (response.status === 400 || response.status === 401)) {
+      console.error("OpenAI API error response:", rawText);
+      throw new Error("Model not available with this API key");
+    }
     throw new Error(`OpenAI API error: ${response.status}`);
   }
 
-  const data = await response.json();
-  let content = data.choices[0].message.content.trim();
+  const parsed = JSON.parse(rawText);
+  const content = parsed.choices[0].message.content
+    || parsed.choices[0].message.reasoning_content
+    || '';
+  if (!content || content.trim() === '') {
+    throw new Error('Empty response content from model');
+  }
 
   // Stage 1: direct parse
   try {
