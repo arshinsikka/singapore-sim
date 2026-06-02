@@ -18,6 +18,8 @@ function App() {
   const [customQuestion, setCustomQuestion]             = useState('');
   const [mode, setMode]                                 = useState('diverse');
   const [numRounds, setNumRounds]                       = useState(1);
+  const [numAgents, setNumAgents]                       = useState(10);
+  const [model, setModel]                               = useState('openai/gpt-4o-mini');
   const [result, setResult]                             = useState(null);
   const [comparisonResult, setComparisonResult]         = useState(null);
   const [loading, setLoading]                           = useState(false);
@@ -92,7 +94,7 @@ function App() {
     setError(null);
     setResult(null);
     try {
-      const data = await runSimulation(selectedQuestionId, mode, numRounds, apiKey);
+      const data = await runSimulation(selectedQuestionId, mode, numRounds, apiKey, numAgents, model);
       setResult(data);
     } catch {
       setError(
@@ -111,8 +113,8 @@ function App() {
     setComparisonResult(null);
     try {
       const [diverseData, homogData] = await Promise.all([
-        runSimulation(selectedQuestionId, 'diverse', numRounds, apiKey),
-        runSimulation(selectedQuestionId, 'homogeneous', numRounds, apiKey),
+        runSimulation(selectedQuestionId, 'diverse', numRounds, apiKey, numAgents, model),
+        runSimulation(selectedQuestionId, 'homogeneous', numRounds, apiKey, numAgents, model),
       ]);
       setComparisonResult({ diverse: diverseData, homogeneous: homogData });
     } catch {
@@ -192,6 +194,10 @@ function App() {
             onModeChange={handleModeChange}
             numRounds={numRounds}
             onRoundsChange={handleRoundsChange}
+            numAgents={numAgents}
+            onNumAgentsChange={setNumAgents}
+            model={model}
+            onModelChange={setModel}
             onRun={handleRun}
             onCompare={handleCompare}
             loading={loading}

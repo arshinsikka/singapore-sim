@@ -7,8 +7,8 @@ function ApiKeyModal({ onKeySubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const trimmed = key.trim();
-    if (!trimmed.startsWith('sk-or-') || trimmed.length <= 20) {
-      setError('Please enter a valid OpenRouter API key (starts with sk-or-).');
+    if (!trimmed.startsWith('sk-') || trimmed.length <= 20) {
+      setError('Please enter a valid OpenAI API key (starts with sk-).');
       return;
     }
     localStorage.setItem('openrouter_api_key', trimmed);
@@ -20,15 +20,15 @@ function ApiKeyModal({ onKeySubmit }) {
       <div style={styles.modal}>
         <h1 style={styles.title}>Singapore Society Simulation</h1>
         <p style={styles.explanation}>
-          Enter your OpenRouter API key to run simulations. Your key is stored locally
-          in your browser and never sent to any server other than OpenRouter.
+          Enter your OpenAI API key to run simulations. Your key is stored locally
+          in your browser and never sent to any server other than OpenAI.
         </p>
         <form onSubmit={handleSubmit} style={styles.form}>
           <input
             type="password"
             value={key}
             onChange={e => { setKey(e.target.value); setError(''); }}
-            placeholder="sk-or-..."
+            placeholder="OpenAI API key"
             style={styles.input}
             autoFocus
           />
@@ -37,14 +37,7 @@ function ApiKeyModal({ onKeySubmit }) {
             Start Simulating
           </button>
         </form>
-        <a
-          href="https://openrouter.ai/keys"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={styles.link}
-        >
-          Get a free API key at openrouter.ai
-        </a>
+        <span style={styles.link}>Enter your OpenAI API key</span>
       </div>
     </div>
   );

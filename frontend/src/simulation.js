@@ -346,6 +346,85 @@ export const POLICY_QUESTIONS = [
       "middle-income Singaporeans, potentially undermining public support for carbon pricing altogether.",
     tags: ["carbon tax", "climate", "inequality", "subsidies", "energy"],
   },
+  {
+    id: "mental_health_days",
+    title: "Mandatory 2 Paid Mental Health Days Per Year for All Full-Time Employees",
+    description:
+      "The Ministry of Manpower proposes requiring all employers to grant full-time employees two additional " +
+      "paid leave days per year designated specifically for mental health, to be taken at the employee's " +
+      "discretion without requiring a medical certificate.",
+    context:
+      "Singapore's workforce consistently ranks among the most overworked in Asia, with surveys reporting " +
+      "high rates of burnout and presenteeism. Mandated mental health leave is already law in several OECD " +
+      "countries. Critics argue the policy adds compliance costs for SMEs and that existing sick-leave entitlements " +
+      "are sufficient; supporters contend the stigma around taking sick leave for psychological reasons makes " +
+      "a dedicated category necessary.",
+    tags: ["mental health", "workplace", "labour", "wellbeing", "MOM"],
+  },
+  {
+    id: "sugar_tax",
+    title: "30% Sugar Tax on All Beverages Exceeding 5g of Sugar per 100ml",
+    description:
+      "The Health Promotion Board proposes a 30% excise tax on all pre-packaged and fountain beverages " +
+      "that contain more than 5 grams of sugar per 100ml, covering soft drinks, sweetened teas, juices, " +
+      "and bubble tea, sold through retail and food-service outlets.",
+    context:
+      "Singapore has one of the highest diabetes rates in the developed world, with the government's " +
+      "'War on Diabetes' already driving Healthier Choice labelling and advertising restrictions on " +
+      "high-sugar drinks. A sugar tax modelled on the UK's Soft Drinks Industry Levy has been debated " +
+      "since 2019. F&B operators and lower-income households warn it disproportionately burdens those " +
+      "who rely on affordable sugary drinks as a daily staple, while public health economists argue " +
+      "price signals are among the most effective tools for changing consumption behaviour.",
+    tags: ["health", "diabetes", "tax", "F&B", "nutrition"],
+  },
+  {
+    id: "ns_pr_optional",
+    title: "Making National Service Optional for Singapore PRs Resident for More Than 10 Years",
+    description:
+      "The Ministry of Defence is consulting on a proposal to allow male Permanent Residents who have " +
+      "lived continuously in Singapore for more than 10 years to opt out of full-time National Service, " +
+      "instead fulfilling a shorter 6-month vocational training programme.",
+    context:
+      "Current law requires male PRs to serve NS on the same basis as citizens. The policy has long " +
+      "been a source of tension: some long-term PR families feel it is equitable given their commitment " +
+      "to Singapore, while many citizens argue NS is a national burden that PRs currently avoid by " +
+      "naturalising late or leaving before enlistment age. Any relaxation risks being perceived as " +
+      "undermining the social compact underpinning NS, but proponents say it could attract and retain " +
+      "high-value long-term residents.",
+    tags: ["NS", "defence", "PR", "immigration", "social compact"],
+  },
+  {
+    id: "medisave_mental_health",
+    title: "Expanding Medisave Withdrawal Limits for Outpatient Mental Health Treatment",
+    description:
+      "The Ministry of Health proposes raising the annual Medisave withdrawal cap for outpatient " +
+      "psychiatric and psychological treatment from the current S$500 to S$2,000, covering consultations, " +
+      "psychotherapy sessions, and approved digital mental health programmes at both public and private clinics.",
+    context:
+      "Out-of-pocket costs are the most commonly cited barrier to seeking mental health care in Singapore. " +
+      "A single private psychotherapy session can cost S$150–300, making sustained treatment unaffordable " +
+      "for many. Medisave currently covers inpatient psychiatric care but imposes tight limits on outpatient " +
+      "use. Expanding access could reduce emergency admissions and workplace absenteeism, though critics " +
+      "note that drawing down retirement savings for recurring outpatient costs could leave individuals " +
+      "with insufficient funds at retirement.",
+    tags: ["mental health", "Medisave", "CPF", "healthcare", "affordability"],
+  },
+  {
+    id: "wealth_tax",
+    title: "1% Annual Wealth Tax on Net Assets Above SGD 10 Million",
+    description:
+      "The Ministry of Finance is studying a proposal to levy a 1% annual tax on the net wealth " +
+      "of Singapore tax residents whose worldwide assets — including property, equities, business " +
+      "interests, and cash — exceed SGD 10 million, with primary residence excluded up to SGD 5 million.",
+    context:
+      "Singapore's status as a wealth hub has seen family offices grow from under 100 in 2017 to over " +
+      "1,400 by 2024, drawing scrutiny over wealth concentration and tax fairness. Proponents argue a " +
+      "modest wealth tax would raise revenue for social spending without significantly deterring investment, " +
+      "citing examples in Norway and Spain. Opponents warn that ultra-high-net-worth individuals are highly " +
+      "mobile and could relocate to competing jurisdictions such as Dubai or Hong Kong, eroding Singapore's " +
+      "competitive position as a financial centre.",
+    tags: ["wealth tax", "inequality", "finance", "fiscal policy", "UHNWIs"],
+  },
 ];
 
 export function sampleDiverse(n = 10) {
@@ -363,7 +442,7 @@ export function sampleDiverse(n = 10) {
 
   for (const key of bucketKeys) {
     const candidates = buckets[key].filter(p => !seenIds.has(p.id));
-    if (candidates.length > 0 && selected.length < n) {
+    if (candidates.length > 0 && selected.length < Math.min(n, ALL_PERSONAS.length)) {
       const chosen = candidates[Math.floor(Math.random() * candidates.length)];
       selected.push(chosen);
       seenIds.add(chosen.id);
@@ -372,9 +451,14 @@ export function sampleDiverse(n = 10) {
 
   const remaining = ALL_PERSONAS.filter(p => !seenIds.has(p.id)).sort(() => Math.random() - 0.5);
   for (const p of remaining) {
-    if (selected.length >= n) break;
+    if (selected.length >= Math.min(n, ALL_PERSONAS.length)) break;
     selected.push(p);
     seenIds.add(p.id);
+  }
+
+  // if n > total persona count, fill remaining slots with repetition
+  while (selected.length < n) {
+    selected.push(ALL_PERSONAS[Math.floor(Math.random() * ALL_PERSONAS.length)]);
   }
 
   return selected.slice(0, n);
@@ -383,11 +467,7 @@ export function sampleDiverse(n = 10) {
 export function sampleHomogeneous(n = 10) {
   let pool = ALL_PERSONAS.filter(p => p.ethnicity === "Chinese" && p.income_level === "median");
   if (pool.length === 0) pool = ALL_PERSONAS.filter(p => p.ethnicity === "Chinese");
-  if (pool.length >= n) {
-    const shuffled = [...pool].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, n);
-  }
-  // sample with replacement when pool < n
+  // always sample with replacement so any n up to 50 works
   const result = [];
   for (let i = 0; i < n; i++) {
     result.push(pool[Math.floor(Math.random() * pool.length)]);
@@ -440,16 +520,15 @@ export function buildMessages(persona, question, priorRoundSummary, roundNumber)
   ];
 }
 
-export async function callLLM(messages, apiKey) {
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+export async function callLLM(messages, apiKey, model = "openai/gpt-4o-mini") {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": "https://arshinsikka.github.io/singapore-sim",
     },
     body: JSON.stringify({
-      model: "anthropic/claude-sonnet-4-5",
+      model,
       messages,
       max_tokens: 300,
       temperature: 0.7,
@@ -457,7 +536,7 @@ export async function callLLM(messages, apiKey) {
   });
 
   if (!response.ok) {
-    throw new Error(`OpenRouter API error: ${response.status}`);
+    throw new Error(`OpenAI API error: ${response.status}`);
   }
 
   const data = await response.json();
@@ -485,7 +564,7 @@ export async function callLLM(messages, apiKey) {
   throw new Error("Could not parse JSON from model response");
 }
 
-export async function getAgentResponse(persona, question, priorRoundSummary, roundNumber, apiKey) {
+export async function getAgentResponse(persona, question, priorRoundSummary, roundNumber, apiKey, model = "openai/gpt-4o-mini") {
   const messages = buildMessages(persona, question, priorRoundSummary, roundNumber);
   const fallback = {
     persona_id: persona.id,
@@ -499,10 +578,10 @@ export async function getAgentResponse(persona, question, priorRoundSummary, rou
 
   let data;
   try {
-    data = await callLLM(messages, apiKey);
+    data = await callLLM(messages, apiKey, model);
   } catch (_) {
     try {
-      data = await callLLM(messages, apiKey);
+      data = await callLLM(messages, apiKey, model);
     } catch (_) {
       return fallback;
     }
@@ -589,8 +668,8 @@ export function summariseRound(responses) {
   );
 }
 
-export async function runSimulation(questionId, mode, numRounds, apiKey) {
-  const personas = mode === "homogeneous" ? sampleHomogeneous(10) : sampleDiverse(10);
+export async function runSimulation(questionId, mode, numRounds, apiKey, numAgents = 10, model = "openai/gpt-4o-mini") {
+  const personas = mode === "homogeneous" ? sampleHomogeneous(numAgents) : sampleDiverse(numAgents);
   const question = POLICY_QUESTIONS.find(q => q.id === questionId);
   if (!question) throw new Error(`Question '${questionId}' not found.`);
 
@@ -599,7 +678,7 @@ export async function runSimulation(questionId, mode, numRounds, apiKey) {
 
   for (let roundNum = 0; roundNum < numRounds; roundNum++) {
     const roundResponses = await Promise.all(
-      personas.map(p => getAgentResponse(p, question, priorSummary, roundNum, apiKey))
+      personas.map(p => getAgentResponse(p, question, priorSummary, roundNum, apiKey, model))
     );
     allResponses.push(...roundResponses);
     priorSummary = summariseRound(roundResponses);
