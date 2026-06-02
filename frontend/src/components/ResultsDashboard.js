@@ -1,238 +1,170 @@
-// ResultsDashboard.js — Full results view: summary bar, breakdowns, agent cards, belief drift
+import React, { useMemo, useState, useEffect } from 'react';
+import DiscussionFeed from './DiscussionFeed';
+import AnalyticsPanel from './AnalyticsPanel';
+import ComparisonView from './ComparisonView';
 
-import React, { useMemo } from 'react';
-import AgentResponseCard from './AgentResponseCard';
+function makeSummary(support_pct, oppose_pct, neutral_pct, total) {
+  if (!total) return null;
+  const s = Math.round(total * support_pct / 100);
+  const o = Math.round(total * oppose_pct / 100);
+  const n = Math.round(total * neutral_pct / 100);
+  if (support_pct >= oppose_pct && support_pct >= neutral_pct)
+    return `${s} out of ${total} citizens supported this policy`;
+  if (oppose_pct > support_pct && oppose_pct >= neutral_pct)
+    return `${o} out of ${total} citizens opposed this policy`;
+  return `${n} out of ${total} citizens were neutral on this policy`;
+}
 
-const INCOME_LABEL = {
-  low:          'Low income',
-  median:       'Median income',
-  above_median: 'Above median',
-  high:         'High income',
-};
+function ResultsDashboard({ result, numRounds, personas, comparisonResult, question, onClearComparison }) {
+  const [activeTab, setActiveTab] = useState('discussion');
 
-function ResultsDashboard({ result, numRounds, personas }) {
-  const personaMap = useMemo(() => {
-    const map = {};
-    (personas || []).forEach((p) => { map[p.id] = p; });
-    return map;
-  }, [personas]);
+  useEffect(() => {
+    if (result) {
+      setActiveTab('discussion');
+    } else if (comparisonResult) {
+      setActiveTab('comparison');
+    }
+  }, [result, comparisonResult]);
 
-  // Identify the latest round's responses
   const latestRound = useMemo(() => {
-    if (!result.agent_responses.length) return 0;
-    return Math.max(...result.agent_responses.map((r) => r.round_number));
+    if (!result?.agent_responses?.length) return 0;
+    return Math.max(...result.agent_responses.map(r => r.round_number));
   }, [result]);
 
   const latestResponses = useMemo(
-    () => result.agent_responses.filter((r) => r.round_number === latestRound),
+    () => result?.agent_responses.filter(r => r.round_number === latestRound) || [],
     [result, latestRound]
   );
 
-  const { support_pct, oppose_pct, neutral_pct, avg_confidence } = result.aggregate;
+  const agg = result?.aggregate || {};
+  const { support_pct = 0, oppose_pct = 0, neutral_pct = 0, avg_confidence = 0 } = agg;
+  const total   = latestResponses.length;
+  const summary = result ? makeSummary(support_pct, oppose_pct, neutral_pct, total) : null;
 
-  // Belief drift: compare round 0 vs round (numRounds - 1)
-  const driftRows = useMemo(() => {
-    if (numRounds < 2) return [];
-    const firstRound  = result.agent_responses.filter((r) => r.round_number === 0);
-    const finalRound  = result.agent_responses.filter((r) => r.round_number === latestRound);
-    const finalByPid  = {};
-    finalRound.forEach((r) => { finalByPid[r.persona_id] = r; });
-
-    return firstRound.map((r) => {
-      const final = finalByPid[r.persona_id];
-      const changed = final && final.position !== r.position;
-      return {
-        name:       r.persona_name,
-        round1:     r.position,
-        roundFinal: final ? final.position : '—',
-        changed,
-      };
-    });
-  }, [result, numRounds, latestRound]);
-
-  // Demographic breakdown
-  const { ethnicity: ethnicityBreakdown, income_level: incomeBreakdown } =
-    result.demographic_breakdown;
-
-  // Render coloured dots for each person's position in a demographic cell
-  function renderDots(group) {
-    const dots = [];
-    if (!group) return null;
-    for (let i = 0; i < (group.Support || 0); i++)
-      dots.push(<span key={`s${i}`} className="pos-dot support" title="Support" />);
-    for (let i = 0; i < (group.Oppose || 0); i++)
-      dots.push(<span key={`o${i}`} className="pos-dot oppose" title="Oppose" />);
-    for (let i = 0; i < (group.Neutral || 0); i++)
-      dots.push(<span key={`n${i}`} className="pos-dot neutral" title="Neutral" />);
-    return dots;
-  }
-
-  const roundLabel = numRounds === 1 ? 'single round' : `round ${latestRound + 1} of ${numRounds}`;
+  const tabs = [
+    { id: 'discussion', label: 'Discussion' },
+    { id: 'analytics',  label: 'Analytics' },
+    { id: 'comparison', label: 'Comparison', locked: !comparisonResult },
+  ];
 
   return (
     <div className="results-dashboard">
 
-      {/* ── Summary stacked bar ── */}
-      <div className="results-summary-panel">
-        <div className="summary-panel-title">Simulation results</div>
-        <div className="summary-panel-subtitle">
-          Showing responses for the {roundLabel} · {latestResponses.length} citizens simulated
-        </div>
+      {/* Always-visible summary bar */}
+      {result && (
+        <div className="results-summary-bar">
+          {summary && <div className="summary-headline">"{summary}"</div>}
 
-        <div className="stacked-bar-wrap">
-          <div className="stacked-bar">
-            {support_pct > 0 && (
-              <div
-                className="bar-segment seg-support"
-                style={{ width: `${support_pct}%` }}
-                title={`Support: ${support_pct}%`}
-              >
-                {support_pct >= 10 ? `${support_pct}%` : ''}
-              </div>
-            )}
-            {neutral_pct > 0 && (
-              <div
-                className="bar-segment seg-neutral"
-                style={{ width: `${neutral_pct}%` }}
-                title={`Neutral: ${neutral_pct}%`}
-              >
-                {neutral_pct >= 10 ? `${neutral_pct}%` : ''}
-              </div>
-            )}
-            {oppose_pct > 0 && (
-              <div
-                className="bar-segment seg-oppose"
-                style={{ width: `${oppose_pct}%` }}
-                title={`Oppose: ${oppose_pct}%`}
-              >
-                {oppose_pct >= 10 ? `${oppose_pct}%` : ''}
-              </div>
-            )}
-          </div>
-
-          <div className="bar-legend">
-            <div className="legend-item">
-              <span className="legend-dot support" />
-              Support {support_pct}%
-            </div>
-            <div className="legend-item">
-              <span className="legend-dot neutral" />
-              Neutral {neutral_pct}%
-            </div>
-            <div className="legend-item">
-              <span className="legend-dot oppose" />
-              Oppose {oppose_pct}%
-            </div>
-          </div>
-        </div>
-
-        <div className="avg-confidence">
-          Average certainty: <strong>{avg_confidence}%</strong> — how confident each
-          citizen felt in their stated position
-        </div>
-      </div>
-
-      {/* ── Demographic breakdown ── */}
-      <div className="results-section-panel">
-        <p className="section-title">Responses by demographic group</p>
-        <div className="breakdown-grid">
-
-          {/* Ethnicity */}
-          <div>
-            <div className="breakdown-group-title">By ethnicity</div>
-            {Object.entries(ethnicityBreakdown || {}).map(([group, counts]) => (
-              <div key={group} className="breakdown-row">
-                <span className="breakdown-label">{group}</span>
-                <div className="breakdown-dots">
-                  {renderDots(counts)}
-                  <span className="breakdown-counts">
-                    {counts.Support || 0}S · {counts.Oppose || 0}O · {counts.Neutral || 0}N
-                  </span>
+          <div className="stacked-bar-wrap">
+            <div className="stacked-bar">
+              {support_pct > 0 && (
+                <div
+                  className="bar-segment seg-support"
+                  style={{ width: `${support_pct}%` }}
+                  title={`Support: ${support_pct}%`}
+                >
+                  {support_pct >= 10 ? `${support_pct}%` : ''}
                 </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Income level */}
-          <div>
-            <div className="breakdown-group-title">By income level</div>
-            {Object.entries(incomeBreakdown || {}).map(([group, counts]) => (
-              <div key={group} className="breakdown-row">
-                <span className="breakdown-label">{INCOME_LABEL[group] || group}</span>
-                <div className="breakdown-dots">
-                  {renderDots(counts)}
-                  <span className="breakdown-counts">
-                    {counts.Support || 0}S · {counts.Oppose || 0}O · {counts.Neutral || 0}N
-                  </span>
+              )}
+              {neutral_pct > 0 && (
+                <div
+                  className="bar-segment seg-neutral"
+                  style={{ width: `${neutral_pct}%` }}
+                  title={`Neutral: ${neutral_pct}%`}
+                >
+                  {neutral_pct >= 10 ? `${neutral_pct}%` : ''}
                 </div>
-              </div>
-            ))}
+              )}
+              {oppose_pct > 0 && (
+                <div
+                  className="bar-segment seg-oppose"
+                  style={{ width: `${oppose_pct}%` }}
+                  title={`Oppose: ${oppose_pct}%`}
+                >
+                  {oppose_pct >= 10 ? `${oppose_pct}%` : ''}
+                </div>
+              )}
+            </div>
+            <div className="bar-legend">
+              <div className="legend-item"><span className="legend-dot support" />Support {support_pct}%</div>
+              <div className="legend-item"><span className="legend-dot neutral" />Neutral {neutral_pct}%</div>
+              <div className="legend-item"><span className="legend-dot oppose" />Oppose {oppose_pct}%</div>
+            </div>
           </div>
 
-        </div>
-      </div>
-
-      {/* ── Belief drift table (only for multi-round) ── */}
-      {numRounds > 1 && driftRows.length > 0 && (
-        <div className="results-section-panel">
-          <p className="section-title">Belief drift</p>
-          <p className="section-subtitle">
-            Which citizens changed their position between round 1 and round {numRounds}?
-          </p>
-          <table className="belief-drift-table">
-            <thead>
-              <tr>
-                <th>Citizen</th>
-                <th>Round 1 position</th>
-                <th>Round {numRounds} position</th>
-                <th>Changed?</th>
-              </tr>
-            </thead>
-            <tbody>
-              {driftRows.map((row) => (
-                <tr key={row.name}>
-                  <td>{row.name}</td>
-                  <td>
-                    <span className={`position-badge badge-${row.round1.toLowerCase()}`}>
-                      {row.round1}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`position-badge badge-${row.roundFinal.toLowerCase()}`}>
-                      {row.roundFinal}
-                    </span>
-                  </td>
-                  <td>
-                    {row.changed ? (
-                      <span className="drift-changed-yes">Yes</span>
-                    ) : (
-                      <span className="drift-changed-no">No</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="avg-confidence">
+            Average certainty: <strong>{avg_confidence}%</strong>
+          </div>
         </div>
       )}
 
-      {/* ── Individual agent responses ── */}
-      <div className="results-section-panel">
-        <p className="section-title">What each citizen said</p>
-        <p className="section-subtitle">
-          Responses from the {roundLabel} — each citizen reasons from their own lived experience
-        </p>
-        <div className="agent-responses-list">
-          {latestResponses.map((response) => (
-            <AgentResponseCard
-              key={`${response.persona_id}-${response.round_number}`}
-              response={response}
-              persona={personaMap[response.persona_id]}
-            />
-          ))}
-        </div>
+      {/* Tab bar */}
+      <div className="tab-bar">
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            className={`tab-button${activeTab === tab.id ? ' active' : ''}${tab.locked ? ' locked' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+            type="button"
+          >
+            {tab.label}
+            {tab.locked && <span className="tab-lock-hint"> (run compare first)</span>}
+          </button>
+        ))}
       </div>
 
+      {/* Tab content — key forces re-mount so fadeInUp re-fires on tab switch */}
+      <div key={activeTab} className="tab-content">
+
+        {activeTab === 'discussion' && (
+          result ? (
+            <DiscussionFeed
+              responses={result.agent_responses}
+              personas={personas}
+              numRounds={numRounds}
+            />
+          ) : (
+            <div className="tab-empty-state">Run a simulation to see the discussion feed.</div>
+          )
+        )}
+
+        {activeTab === 'analytics' && (
+          result ? (
+            <AnalyticsPanel
+              result={result}
+              numRounds={numRounds}
+              comparisonResult={comparisonResult}
+              personas={personas}
+            />
+          ) : (
+            <div className="tab-empty-state">Run a simulation to see analytics.</div>
+          )
+        )}
+
+        {activeTab === 'comparison' && (
+          comparisonResult ? (
+            <>
+              <ComparisonView
+                comparisonResult={comparisonResult}
+                question={question}
+                numRounds={numRounds}
+              />
+              <div className="clear-comparison-wrap">
+                <button
+                  className="clear-comparison-link"
+                  onClick={onClearComparison}
+                  type="button"
+                >
+                  Clear comparison
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="tab-empty-state">Run a comparison to unlock this tab.</div>
+          )
+        )}
+
+      </div>
     </div>
   );
 }

@@ -1,11 +1,34 @@
-// SimulationControls.js — Population mode toggle, rounds selector, Run and Compare buttons
-
 import React from 'react';
 
-const MODE_EXPLANATIONS = {
-  diverse:      'Agents drawn from across Singapore\'s demographic groups',
-  homogeneous:  'All agents share the same ethnicity and income level — useful as a comparison baseline',
-};
+const MODE_CONFIG = [
+  {
+    key:   'diverse',
+    icon:  '🌏',
+    title: 'Diverse population',
+    desc:  'Agents drawn from across Singapore\'s demographic groups',
+  },
+  {
+    key:   'homogeneous',
+    icon:  '👥',
+    title: 'Uniform population',
+    desc:  'All agents share the same ethnicity and income level',
+  },
+];
+
+const ROUNDS_CONFIG = [
+  {
+    key:   1,
+    icon:  '○',
+    title: 'Single round',
+    desc:  'Each citizen responds without hearing from others first',
+  },
+  {
+    key:   3,
+    icon:  '◎',
+    title: '3 rounds',
+    desc:  'Agents update after hearing the group — reveals belief drift',
+  },
+];
 
 function SimulationControls({
   mode, onModeChange,
@@ -15,65 +38,46 @@ function SimulationControls({
 }) {
   return (
     <div className="simulation-controls">
-      {/* ── Population mode toggle ── */}
+
+      {/* Population type */}
       <div>
         <div className="control-group-label">Population type</div>
-        <div className="toggle-group">
-          <button
-            className={`toggle-option${mode === 'diverse' ? ' active' : ''}`}
-            onClick={() => onModeChange('diverse')}
-            type="button"
-          >
-            Diverse population
-          </button>
-          <button
-            className={`toggle-option${mode === 'homogeneous' ? ' active' : ''}`}
-            onClick={() => onModeChange('homogeneous')}
-            type="button"
-          >
-            Uniform population
-          </button>
+        <div className="mode-cards">
+          {MODE_CONFIG.map(cfg => (
+            <button
+              key={cfg.key}
+              className={`mode-card${mode === cfg.key ? ' active' : ''}`}
+              onClick={() => onModeChange(cfg.key)}
+              type="button"
+            >
+              <span className="mode-card-icon">{cfg.icon}</span>
+              <span className="mode-card-title">{cfg.title}</span>
+              <span className="mode-card-desc">{cfg.desc}</span>
+            </button>
+          ))}
         </div>
-        <p className="toggle-explanation">{MODE_EXPLANATIONS[mode]}</p>
       </div>
 
-      {/* ── Rounds selector ── */}
+      {/* Simulation rounds */}
       <div>
         <div className="control-group-label">Simulation rounds</div>
-        <div className="rounds-group">
-          <label className={`rounds-option${numRounds === 1 ? ' active' : ''}`}>
-            <input
-              type="radio"
-              name="rounds"
-              checked={numRounds === 1}
-              onChange={() => onRoundsChange(1)}
-            />
-            <span>
-              <span className="rounds-option-title">Single round (independent views)</span>
-              <span className="rounds-option-desc">
-                Each citizen responds without hearing from others first
-              </span>
-            </span>
-          </label>
-
-          <label className={`rounds-option${numRounds === 3 ? ' active' : ''}`}>
-            <input
-              type="radio"
-              name="rounds"
-              checked={numRounds === 3}
-              onChange={() => onRoundsChange(3)}
-            />
-            <span>
-              <span className="rounds-option-title">3 rounds (agents update after hearing from the group)</span>
-              <span className="rounds-option-desc">
-                Shows how opinions shift when people learn what others think — belief drift
-              </span>
-            </span>
-          </label>
+        <div className="rounds-cards">
+          {ROUNDS_CONFIG.map(cfg => (
+            <button
+              key={cfg.key}
+              className={`rounds-card${numRounds === cfg.key ? ' active' : ''}`}
+              onClick={() => onRoundsChange(cfg.key)}
+              type="button"
+            >
+              <span className="rounds-card-icon">{cfg.icon}</span>
+              <span className="rounds-card-title">{cfg.title}</span>
+              <span className="rounds-card-desc">{cfg.desc}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* ── Run button ── */}
+      {/* Run button */}
       <button
         className="run-button"
         onClick={onRun}
@@ -83,7 +87,7 @@ function SimulationControls({
         {loading ? 'Running simulation…' : 'Run Simulation'}
       </button>
 
-      {/* ── Compare button ── */}
+      {/* Compare button */}
       <button
         className="compare-button"
         onClick={onCompare}
@@ -92,6 +96,7 @@ function SimulationControls({
       >
         {comparisonLoading ? 'Running comparison…' : 'Compare: Diverse vs Uniform'}
       </button>
+
     </div>
   );
 }

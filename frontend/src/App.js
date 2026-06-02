@@ -1,48 +1,48 @@
-// App.js — Main application shell; owns all global state and orchestrates layout
-
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import './App.css';
 
 import QuestionSelector   from './components/QuestionSelector';
 import SimulationControls from './components/SimulationControls';
 import PersonaGrid        from './components/PersonaGrid';
 import ResultsDashboard   from './components/ResultsDashboard';
-import ComparisonView     from './components/ComparisonView';
+import ApiKeyModal        from './components/ApiKeyModal';
 
-const API = 'http://localhost:8000';
+import { ALL_PERSONAS, POLICY_QUESTIONS, runSimulation } from './simulation';
 
 function App() {
-  const [questions, setQuestions]                   = useState([]);
-  const [personas, setPersonas]                     = useState([]);
-  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
-  const [customQuestion, setCustomQuestion]         = useState('');
-  const [mode, setMode]                             = useState('diverse');
-  const [numRounds, setNumRounds]                   = useState(1);
-  const [result, setResult]                         = useState(null);
-  const [comparisonResult, setComparisonResult]     = useState(null);
-  const [loading, setLoading]                       = useState(false);
-  const [comparisonLoading, setComparisonLoading]   = useState(false);
-  const [error, setError]                           = useState(null);
+  const [apiKey, setApiKey]                             = useState(null);
+  const [showModal, setShowModal]                       = useState(false);
+  const [questions]                                     = useState(POLICY_QUESTIONS);
+  const [personas]                                      = useState(ALL_PERSONAS);
+  const [selectedQuestionId, setSelectedQuestionId]     = useState(POLICY_QUESTIONS[0]?.id || null);
+  const [customQuestion, setCustomQuestion]             = useState('');
+  const [mode, setMode]                                 = useState('diverse');
+  const [numRounds, setNumRounds]                       = useState(1);
+  const [result, setResult]                             = useState(null);
+  const [comparisonResult, setComparisonResult]         = useState(null);
+  const [loading, setLoading]                           = useState(false);
+  const [comparisonLoading, setComparisonLoading]       = useState(false);
+  const [error, setError]                               = useState(null);
 
-  // Fetch questions and personas on mount
   useEffect(() => {
-    Promise.all([
-      axios.get(`${API}/questions`),
-      axios.get(`${API}/personas`),
-    ])
-      .then(([qRes, pRes]) => {
-        setQuestions(qRes.data);
-        setPersonas(pRes.data);
-        if (qRes.data.length > 0) setSelectedQuestionId(qRes.data[0].id);
-      })
-      .catch(() => {
-        setError(
-          'Could not connect to the simulation server. ' +
-          'Please ensure it is running at http://localhost:8000.'
-        );
-      });
+    const stored = localStorage.getItem('openrouter_api_key');
+    if (stored) {
+      setApiKey(stored);
+    } else {
+      setShowModal(true);
+    }
   }, []);
+
+  const handleKeySubmit = (key) => {
+    setApiKey(key);
+    setShowModal(false);
+  };
+
+  const handleChangeKey = () => {
+    localStorage.removeItem('openrouter_api_key');
+    setApiKey(null);
+    setShowModal(true);
+  };
 
   const handleSelectQuestion = (id) => {
     setSelectedQuestionId(id);
@@ -91,18 +91,13 @@ function App() {
     setLoading(true);
     setError(null);
     setResult(null);
-
     try {
-      const response = await axios.post(`${API}/simulate`, {
-        question_id: selectedQuestionId,
-        mode,
-        num_rounds: numRounds,
-      });
-      setResult(response.data);
+      const data = await runSimulation(selectedQuestionId, mode, numRounds, apiKey);
+      setResult(data);
     } catch {
       setError(
         'Something went wrong — please try again. ' +
-        'If the problem persists, check that the simulation server is running.'
+        'Check your API key and network connection.'
       );
     } finally {
       setLoading(false);
@@ -114,49 +109,60 @@ function App() {
     setComparisonLoading(true);
     setError(null);
     setComparisonResult(null);
-
     try {
-      const [diverseRes, homogRes] = await Promise.all([
-        axios.post(`${API}/simulate`, {
-          question_id: selectedQuestionId,
-          mode: 'diverse',
-          num_rounds: numRounds,
-        }),
-        axios.post(`${API}/simulate`, {
-          question_id: selectedQuestionId,
-          mode: 'homogeneous',
-          num_rounds: numRounds,
-        }),
+      const [diverseData, homogData] = await Promise.all([
+        runSimulation(selectedQuestionId, 'diverse', numRounds, apiKey),
+        runSimulation(selectedQuestionId, 'homogeneous', numRounds, apiKey),
       ]);
-      setComparisonResult({ diverse: diverseRes.data, homogeneous: homogRes.data });
+      setComparisonResult({ diverse: diverseData, homogeneous: homogData });
     } catch {
       setError(
         'Something went wrong — please try again. ' +
-        'If the problem persists, check that the simulation server is running.'
+        'Check your API key and network connection.'
       );
     } finally {
       setComparisonLoading(false);
     }
   };
 
-  const canAct = !loading && !comparisonLoading &&
-                 (!!selectedQuestionId || !!customQuestion.trim());
-
+  const canAct        = !loading && !comparisonLoading &&
+                        (!!selectedQuestionId || !!customQuestion.trim());
   const isLoading     = loading || comparisonLoading;
-  const showPersonas  = !result && !comparisonResult;
-  const selectedQuestion = questions.find((q) => q.id === selectedQuestionId) || null;
+  const showSkeleton  = loading && !result;
+  const showPersonas  = !result && !comparisonResult && !loading;
+  const selectedQuestion = questions.find(q => q.id === selectedQuestionId) || null;
 
   return (
     <div className="app">
+
+      {showModal && <ApiKeyModal onKeySubmit={handleKeySubmit} />}
+
       {/* ── Header ── */}
       <header className="app-header">
         <div className="header-inner">
           <h1 className="header-title">Singapore Society Simulation</h1>
           <p className="header-subtitle">How might citizens respond to public policy?</p>
         </div>
+        {apiKey && (
+          <button
+            onClick={handleChangeKey}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.55)',
+              fontSize: '0.78rem',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              padding: '0 1rem',
+              alignSelf: 'center',
+            }}
+          >
+            Change API key
+          </button>
+        )}
       </header>
 
-      {/* ── Full-width loading banner ── */}
+      {/* ── Loading banner ── */}
       {isLoading && (
         <div className="loading-banner">
           <div className="spinner" />
@@ -170,6 +176,7 @@ function App() {
 
       {/* ── Two-column layout ── */}
       <main className="app-main">
+
         {/* Left 38% */}
         <div className="left-column">
           <QuestionSelector
@@ -197,34 +204,28 @@ function App() {
 
         {/* Right 62% */}
         <div className="right-column">
-          {showPersonas && (
-            <PersonaGrid personas={personas} mode={mode} />
+          {showSkeleton && (
+            <div className="skeleton-container">
+              <div className="skeleton-bar" />
+              <div className="skeleton-bar" style={{ width: '85%' }} />
+              <div className="skeleton-bar" style={{ width: '68%' }} />
+            </div>
           )}
 
-          {result && (
-            <ResultsDashboard result={result} numRounds={numRounds} personas={personas} />
-          )}
+          {showPersonas && <PersonaGrid personas={personas} mode={mode} />}
 
-          {/* ComparisonView: below ResultsDashboard if both exist; sole content if result is null */}
-          {comparisonResult && (
-            <>
-              <ComparisonView
-                comparisonResult={comparisonResult}
-                question={selectedQuestion}
-                numRounds={numRounds}
-              />
-              <div className="clear-comparison-wrap">
-                <button
-                  className="clear-comparison-link"
-                  onClick={() => setComparisonResult(null)}
-                  type="button"
-                >
-                  Clear comparison
-                </button>
-              </div>
-            </>
+          {(result || comparisonResult) && (
+            <ResultsDashboard
+              result={result}
+              numRounds={numRounds}
+              personas={personas}
+              comparisonResult={comparisonResult}
+              question={selectedQuestion}
+              onClearComparison={() => setComparisonResult(null)}
+            />
           )}
         </div>
+
       </main>
     </div>
   );
