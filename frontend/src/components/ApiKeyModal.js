@@ -28,7 +28,7 @@ function ApiKeyModal({ onKeySubmit }) {
             type="password"
             value={key}
             onChange={e => { setKey(e.target.value); setError(''); }}
-            placeholder="OpenAI API key"
+            placeholder="sk-... (OpenAI API key)"
             style={styles.input}
             autoFocus
           />

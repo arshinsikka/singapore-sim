@@ -520,8 +520,8 @@ export function buildMessages(persona, question, priorRoundSummary, roundNumber)
   ];
 }
 
-export async function callLLM(messages, apiKey, model = "openai/gpt-4o-mini") {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+export async function callLLM(messages, apiKey, model = "gpt-4o-mini") {
+  const response = await fetch("https://singapore-sim-proxy.sikka-arshin.workers.dev", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
@@ -564,7 +564,7 @@ export async function callLLM(messages, apiKey, model = "openai/gpt-4o-mini") {
   throw new Error("Could not parse JSON from model response");
 }
 
-export async function getAgentResponse(persona, question, priorRoundSummary, roundNumber, apiKey, model = "openai/gpt-4o-mini") {
+export async function getAgentResponse(persona, question, priorRoundSummary, roundNumber, apiKey, model = "gpt-4o-mini") {
   const messages = buildMessages(persona, question, priorRoundSummary, roundNumber);
   const fallback = {
     persona_id: persona.id,
@@ -668,7 +668,7 @@ export function summariseRound(responses) {
   );
 }
 
-export async function runSimulation(questionId, mode, numRounds, apiKey, numAgents = 10, model = "openai/gpt-4o-mini") {
+export async function runSimulation(questionId, mode, numRounds, apiKey, numAgents = 10, model = "gpt-4o-mini") {
   const personas = mode === "homogeneous" ? sampleHomogeneous(numAgents) : sampleDiverse(numAgents);
   const question = POLICY_QUESTIONS.find(q => q.id === questionId);
   if (!question) throw new Error(`Question '${questionId}' not found.`);

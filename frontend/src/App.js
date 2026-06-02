@@ -19,7 +19,7 @@ function App() {
   const [mode, setMode]                                 = useState('diverse');
   const [numRounds, setNumRounds]                       = useState(1);
   const [numAgents, setNumAgents]                       = useState(10);
-  const [model, setModel]                               = useState('openai/gpt-4o-mini');
+  const [model, setModel]                               = useState('gpt-4o-mini');
   const [result, setResult]                             = useState(null);
   const [comparisonResult, setComparisonResult]         = useState(null);
   const [loading, setLoading]                           = useState(false);
