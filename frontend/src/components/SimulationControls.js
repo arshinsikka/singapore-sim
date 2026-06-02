@@ -17,7 +17,7 @@ const MODE_CONFIG = [
 
 const MODEL_OPTIONS = [
   { label: 'GPT-4o mini', value: 'gpt-4o-mini' },
-  { label: 'GPT-4o',      value: 'gpt-4o'      },
+  { label: 'GPT-5 mini',  value: 'gpt-5-mini'  },
 ];
 
 function roundsDescription(n) {
@@ -84,7 +84,7 @@ function SimulationControls({
           type="range"
           min={10}
           max={50}
-          step={5}
+          step={1}
           value={numAgents}
           onChange={e => onNumAgentsChange(Number(e.target.value))}
           style={sliderStyle}
