@@ -520,7 +520,7 @@ export function buildMessages(persona, question, priorRoundSummary, roundNumber)
   ];
 }
 
-export async function callLLM(messages, apiKey, model = "gpt-4o-mini") {
+export async function callLLM(messages, model = "gpt-4o-mini") {
   const body = {
     model,
     messages,
@@ -530,7 +530,6 @@ export async function callLLM(messages, apiKey, model = "gpt-4o-mini") {
   const response = await fetch("https://singapore-sim-proxy.sikka-arshin.workers.dev", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -578,7 +577,7 @@ export async function callLLM(messages, apiKey, model = "gpt-4o-mini") {
   throw new Error("Could not parse JSON from model response");
 }
 
-export async function getAgentResponse(persona, question, priorRoundSummary, roundNumber, apiKey, model = "gpt-4o-mini") {
+export async function getAgentResponse(persona, question, priorRoundSummary, roundNumber, model = "gpt-4o-mini") {
   const messages = buildMessages(persona, question, priorRoundSummary, roundNumber);
   const fallback = {
     persona_id: persona.id,
@@ -592,10 +591,10 @@ export async function getAgentResponse(persona, question, priorRoundSummary, rou
 
   let data;
   try {
-    data = await callLLM(messages, apiKey, model);
+    data = await callLLM(messages, model);
   } catch (_) {
     try {
-      data = await callLLM(messages, apiKey, model);
+      data = await callLLM(messages, model);
     } catch (_) {
       return fallback;
     }
@@ -682,7 +681,7 @@ export function summariseRound(responses) {
   );
 }
 
-export async function runSimulation(questionId, mode, numRounds, apiKey, numAgents = 10, model = "gpt-4o-mini") {
+export async function runSimulation(questionId, mode, numRounds, numAgents = 10, model = "gpt-4o-mini") {
   const personas = mode === "homogeneous" ? sampleHomogeneous(numAgents) : sampleDiverse(numAgents);
   const question = POLICY_QUESTIONS.find(q => q.id === questionId);
   if (!question) throw new Error(`Question '${questionId}' not found.`);
@@ -692,7 +691,7 @@ export async function runSimulation(questionId, mode, numRounds, apiKey, numAgen
 
   for (let roundNum = 0; roundNum < numRounds; roundNum++) {
     const roundResponses = await Promise.all(
-      personas.map(p => getAgentResponse(p, question, priorSummary, roundNum, apiKey, model))
+      personas.map(p => getAgentResponse(p, question, priorSummary, roundNum, model))
     );
     allResponses.push(...roundResponses);
     priorSummary = summariseRound(roundResponses);

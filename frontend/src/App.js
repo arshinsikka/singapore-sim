@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 import QuestionSelector   from './components/QuestionSelector';
 import SimulationControls from './components/SimulationControls';
 import PersonaGrid        from './components/PersonaGrid';
 import ResultsDashboard   from './components/ResultsDashboard';
-import ApiKeyModal        from './components/ApiKeyModal';
 
 import { ALL_PERSONAS, POLICY_QUESTIONS, runSimulation } from './simulation';
 
 function App() {
-  const [apiKey, setApiKey]                             = useState(null);
-  const [showModal, setShowModal]                       = useState(false);
   const [questions]                                     = useState(POLICY_QUESTIONS);
   const [personas]                                      = useState(ALL_PERSONAS);
   const [selectedQuestionId, setSelectedQuestionId]     = useState(POLICY_QUESTIONS[0]?.id || null);
@@ -25,26 +22,6 @@ function App() {
   const [loading, setLoading]                           = useState(false);
   const [comparisonLoading, setComparisonLoading]       = useState(false);
   const [error, setError]                               = useState(null);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('openrouter_api_key');
-    if (stored) {
-      setApiKey(stored);
-    } else {
-      setShowModal(true);
-    }
-  }, []);
-
-  const handleKeySubmit = (key) => {
-    setApiKey(key);
-    setShowModal(false);
-  };
-
-  const handleChangeKey = () => {
-    localStorage.removeItem('openrouter_api_key');
-    setApiKey(null);
-    setShowModal(true);
-  };
 
   const handleSelectQuestion = (id) => {
     setSelectedQuestionId(id);
@@ -94,12 +71,12 @@ function App() {
     setError(null);
     setResult(null);
     try {
-      const data = await runSimulation(selectedQuestionId, mode, numRounds, apiKey, numAgents, model);
+      const data = await runSimulation(selectedQuestionId, mode, numRounds, numAgents, model);
       setResult(data);
     } catch {
       setError(
         'Something went wrong — please try again. ' +
-        'Check your API key and network connection.'
+        'Check your network connection and try again.'
       );
     } finally {
       setLoading(false);
@@ -113,14 +90,14 @@ function App() {
     setComparisonResult(null);
     try {
       const [diverseData, homogData] = await Promise.all([
-        runSimulation(selectedQuestionId, 'diverse', numRounds, apiKey, numAgents, model),
-        runSimulation(selectedQuestionId, 'homogeneous', numRounds, apiKey, numAgents, model),
+        runSimulation(selectedQuestionId, 'diverse', numRounds, numAgents, model),
+        runSimulation(selectedQuestionId, 'homogeneous', numRounds, numAgents, model),
       ]);
       setComparisonResult({ diverse: diverseData, homogeneous: homogData });
     } catch {
       setError(
         'Something went wrong — please try again. ' +
-        'Check your API key and network connection.'
+        'Check your network connection and try again.'
       );
     } finally {
       setComparisonLoading(false);
@@ -137,31 +114,12 @@ function App() {
   return (
     <div className="app">
 
-      {showModal && <ApiKeyModal onKeySubmit={handleKeySubmit} />}
-
       {/* ── Header ── */}
       <header className="app-header">
         <div className="header-inner">
           <h1 className="header-title">Singapore Society Simulation</h1>
           <p className="header-subtitle">How might citizens respond to public policy?</p>
         </div>
-        {apiKey && (
-          <button
-            onClick={handleChangeKey}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'rgba(255,255,255,0.55)',
-              fontSize: '0.78rem',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-              padding: '0 1rem',
-              alignSelf: 'center',
-            }}
-          >
-            Change API key
-          </button>
-        )}
       </header>
 
       {/* ── Loading banner ── */}
