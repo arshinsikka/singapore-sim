@@ -1,24 +1,9 @@
 import React from 'react';
 
-const MODE_CONFIG = [
-  {
-    key:   'diverse',
-    icon:  '🌏',
-    title: 'Diverse population',
-    desc:  'Agents drawn from across Singapore\'s demographic groups',
-  },
-  {
-    key:   'homogeneous',
-    icon:  '👥',
-    title: 'Uniform population',
-    desc:  'All agents share the same ethnicity and income level',
-  },
-];
-
-
 const MODEL_OPTIONS = [
-  { label: 'GPT-4o mini', value: 'gpt-4o-mini' },
-  { label: 'GPT-5 mini',  value: 'gpt-5-mini'  },
+  { label: 'GPT-4o mini',   value: 'gpt-4o-mini'   },
+  { label: 'GPT-5 mini',    value: 'gpt-5-mini'    },
+  { label: 'GPT-4.1 mini',  value: 'gpt-4.1-mini'  },
 ];
 
 function roundsDescription(n) {
@@ -28,32 +13,42 @@ function roundsDescription(n) {
 }
 
 function SimulationControls({
-  mode, onModeChange,
   numRounds, onRoundsChange,
-  numAgents, onNumAgentsChange,
+  numAgents,
   model, onModelChange,
-  onRun, onCompare,
-  loading, comparisonLoading, disabled,
+  onRun,
+  loading, disabled,
+  onBack,
 }) {
   return (
     <div className="simulation-controls">
 
-      {/* Population type */}
+      {/* Back link */}
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--navy, #0a193c)',
+            cursor: 'pointer',
+            fontSize: '0.88rem',
+            fontWeight: 600,
+            textDecoration: 'underline',
+            padding: '0 0 0.5rem',
+            display: 'block',
+          }}
+        >
+          ← Back
+        </button>
+      )}
+
+      {/* Selected agents (read-only) */}
       <div>
-        <div className="control-group-label">Population type</div>
-        <div className="mode-cards">
-          {MODE_CONFIG.map(cfg => (
-            <button
-              key={cfg.key}
-              className={`mode-card${mode === cfg.key ? ' active' : ''}`}
-              onClick={() => onModeChange(cfg.key)}
-              type="button"
-            >
-              <span className="mode-card-icon">{cfg.icon}</span>
-              <span className="mode-card-title">{cfg.title}</span>
-              <span className="mode-card-desc">{cfg.desc}</span>
-            </button>
-          ))}
+        <div className="control-group-label">Agents</div>
+        <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--navy, #0a193c)' }}>
+          {numAgents} agent{numAgents !== 1 ? 's' : ''} selected
         </div>
       </div>
 
@@ -71,32 +66,15 @@ function SimulationControls({
           value={numRounds}
           onChange={e => onRoundsChange(Number(e.target.value))}
           style={sliderStyle}
+          disabled={disabled}
         />
         <div style={sliderCaption}>{roundsDescription(numRounds)}</div>
-      </div>
-
-      {/* Number of agents — slider */}
-      <div>
-        <div className="control-group-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span>Number of agents</span>
-          <span style={{ fontWeight: 700, color: 'var(--navy, #0a193c)' }}>{numAgents}</span>
-        </div>
-        <input
-          type="range"
-          min={10}
-          max={50}
-          step={1}
-          value={numAgents}
-          onChange={e => onNumAgentsChange(Number(e.target.value))}
-          style={sliderStyle}
-        />
-        <div style={sliderCaption}>Simulating {numAgents} synthetic Singapore citizens</div>
       </div>
 
       {/* Language model */}
       <div>
         <div className="control-group-label">Language model</div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {MODEL_OPTIONS.map(opt => {
             const active = model === opt.value;
             return (
@@ -104,17 +82,19 @@ function SimulationControls({
                 key={opt.value}
                 type="button"
                 onClick={() => onModelChange(opt.value)}
+                disabled={disabled}
                 style={{
-                  flex: 1,
+                  flex: '1 1 auto',
                   padding: '0.45rem 0.75rem',
                   borderRadius: '999px',
                   fontSize: '0.82rem',
                   fontWeight: 600,
-                  cursor: 'pointer',
+                  cursor: disabled ? 'not-allowed' : 'pointer',
                   border: `1.5px solid var(--navy, #0a193c)`,
                   background: active ? 'var(--navy, #0a193c)' : 'transparent',
                   color: active ? '#ffffff' : 'var(--navy, #0a193c)',
                   transition: 'background 0.15s, color 0.15s',
+                  opacity: disabled ? 0.6 : 1,
                 }}
               >
                 {opt.label}
@@ -132,16 +112,6 @@ function SimulationControls({
         type="button"
       >
         {loading ? 'Running simulation…' : 'Run Simulation'}
-      </button>
-
-      {/* Compare button */}
-      <button
-        className="compare-button"
-        onClick={onCompare}
-        disabled={disabled}
-        type="button"
-      >
-        {comparisonLoading ? 'Running comparison…' : 'Compare: Diverse vs Uniform'}
       </button>
 
     </div>

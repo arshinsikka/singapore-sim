@@ -1,30 +1,19 @@
 import React, { useState, useMemo } from 'react';
 
-const ETHNICITY_CLASS = {
-  Chinese: 'avatar-chinese',
-  Malay:   'avatar-malay',
-  Indian:  'avatar-indian',
-  Others:  'avatar-others',
-};
-
-const ETH_FILTERS = ['Chinese', 'Malay', 'Indian', 'Others'];
 const POS_FILTERS = ['Support', 'Oppose', 'Neutral'];
 
-function getInitials(name) {
-  return name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
-}
-
 function FeedPost({ response, persona, isLast, round1Position }) {
-  const initials  = getInitials(response.persona_name);
-  const avatarCls = persona ? (ETHNICITY_CLASS[persona.ethnicity] || 'avatar-others') : 'avatar-others';
-  const pos       = response.position;
-  const badgeCls  = pos === 'Support' ? 'badge-support' : pos === 'Oppose' ? 'badge-oppose' : 'badge-neutral';
-  const changed   = response.round_number > 0 && round1Position && pos !== round1Position;
+  const [expanded, setExpanded] = useState(false);
+  const pos      = response.position;
+  const badgeCls = pos === 'Support' ? 'badge-support' : pos === 'Oppose' ? 'badge-oppose' : 'badge-neutral';
+  const changed  = response.round_number > 0 && round1Position && pos !== round1Position;
 
   return (
     <div className={`thread-post${response.round_number > 0 ? ' post-indented' : ''}`}>
       <div className="thread-left">
-        <div className={`persona-avatar ${avatarCls}`}>{initials}</div>
+        <div className="persona-avatar avatar-others" style={{ background: 'var(--navy, #0a193c)', color: '#fff', fontSize: '0.7rem', fontWeight: 700 }}>
+          {response.persona_name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase()}
+        </div>
         {!isLast && <div className="thread-connector" />}
       </div>
 
@@ -39,7 +28,7 @@ function FeedPost({ response, persona, isLast, round1Position }) {
           <span className="thread-name">{response.persona_name}</span>
           {persona && (
             <span className="thread-meta">
-              {persona.occupation} · {persona.planning_area}
+              {persona.sex} · {persona.age} · {persona.marital_status} · {persona.education_level} · {persona.occupation} · {persona.industry} · {persona.planning_area}
             </span>
           )}
           <span className="thread-round-pill">Round {response.round_number + 1}</span>
@@ -56,6 +45,43 @@ function FeedPost({ response, persona, isLast, round1Position }) {
           <div className={`thread-key-concern concern-${pos.toLowerCase()}`}>
             <span className="concern-icon">"</span>
             {response.key_concern}
+          </div>
+        )}
+
+        {persona && (persona.persona || persona.cultural_background) && (
+          <div style={{ marginTop: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={() => setExpanded(x => !x)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted, #5a6a85)',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                padding: 0,
+                textDecoration: 'underline',
+              }}
+            >
+              {expanded ? 'Hide profile ▲' : 'Show full profile ▼'}
+            </button>
+            {expanded && (
+              <div style={{
+                marginTop: '0.5rem',
+                padding: '0.75rem',
+                background: '#f6f4ef',
+                borderRadius: '6px',
+                fontSize: '0.78rem',
+                color: '#2c3e50',
+              }}>
+                {persona.persona && (
+                  <p style={{ margin: '0 0 0.5rem' }}><strong>Persona:</strong> {persona.persona}</p>
+                )}
+                {persona.cultural_background && (
+                  <p style={{ margin: 0 }}><strong>Cultural background:</strong> {persona.cultural_background}</p>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -91,18 +117,13 @@ function DiscussionFeed({ responses, personas, numRounds }) {
 
   const filteredThreads = useMemo(() => {
     if (!activeFilters.length) return agentThreads;
-    const ethFilters = activeFilters.filter(f => ETH_FILTERS.includes(f));
-    const posFilters = activeFilters.filter(f => POS_FILTERS.includes(f));
     return agentThreads.filter(thread => {
-      const persona = personaMap[thread[0].persona_id];
-      const latest  = thread[thread.length - 1];
-      const ethOk   = !ethFilters.length || (persona && ethFilters.includes(persona.ethnicity));
-      const posOk   = !posFilters.length || posFilters.includes(latest.position);
-      return ethOk && posOk;
+      const latest = thread[thread.length - 1];
+      return activeFilters.includes(latest.position);
     });
-  }, [agentThreads, activeFilters, personaMap]);
+  }, [agentThreads, activeFilters]);
 
-  const allFilterLabels = ['All', ...ETH_FILTERS, ...POS_FILTERS];
+  const allFilterLabels = ['All', ...POS_FILTERS];
 
   return (
     <div className="discussion-feed">

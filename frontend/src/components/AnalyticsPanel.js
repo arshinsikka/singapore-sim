@@ -14,14 +14,7 @@ const LAYOUT_BASE = {
   showlegend: false,
 };
 
-const INCOME_LABEL = {
-  low:          'Low income',
-  median:       'Median income',
-  above_median: 'Above median',
-  high:         'High income',
-};
-
-function AnalyticsPanel({ result, numRounds, comparisonResult, personas }) {
+function AnalyticsPanel({ result, numRounds, personas }) {
   const personaMap = useMemo(() => {
     const map = {};
     (personas || []).forEach(p => { map[p.id] = p; });
@@ -39,39 +32,6 @@ function AnalyticsPanel({ result, numRounds, comparisonResult, personas }) {
   );
 
   const positionChartData = useMemo(() => {
-    if (comparisonResult) {
-      const dAgg = comparisonResult.diverse.aggregate;
-      const hAgg = comparisonResult.homogeneous.aggregate;
-      return {
-        data: [
-          {
-            name: 'Diverse',
-            x: [Math.round(dAgg.support_pct / 10), Math.round(dAgg.neutral_pct / 10), Math.round(dAgg.oppose_pct / 10)],
-            y: ['Support', 'Neutral', 'Oppose'],
-            type: 'bar',
-            orientation: 'h',
-            marker: { color: '#2d7a4f' },
-          },
-          {
-            name: 'Uniform',
-            x: [Math.round(hAgg.support_pct / 10), Math.round(hAgg.neutral_pct / 10), Math.round(hAgg.oppose_pct / 10)],
-            y: ['Support', 'Neutral', 'Oppose'],
-            type: 'bar',
-            orientation: 'h',
-            marker: { color: '#1a3a5c' },
-          },
-        ],
-        layout: {
-          ...LAYOUT_BASE,
-          barmode: 'group',
-          showlegend: true,
-          legend: { orientation: 'h', y: -0.28, font: { size: 11 } },
-          xaxis: { ...LAYOUT_BASE.xaxis, title: { text: 'Citizens', font: { size: 11 } }, dtick: 1 },
-          margin: { ...LAYOUT_BASE.margin, b: 60 },
-        },
-      };
-    }
-
     const supportCount = latestResponses.filter(r => r.position === 'Support').length;
     const neutralCount = latestResponses.filter(r => r.position === 'Neutral').length;
     const opposeCount  = latestResponses.filter(r => r.position === 'Oppose').length;
@@ -89,7 +49,7 @@ function AnalyticsPanel({ result, numRounds, comparisonResult, personas }) {
         xaxis: { ...LAYOUT_BASE.xaxis, title: { text: 'Citizens', font: { size: 11 } }, dtick: 1 },
       },
     };
-  }, [latestResponses, comparisonResult]);
+  }, [latestResponses]);
 
   const confidenceChartData = useMemo(() => ({
     data: [{
@@ -152,15 +112,16 @@ function AnalyticsPanel({ result, numRounds, comparisonResult, personas }) {
 
   const downloadCSV = () => {
     if (!result) return;
-    const headers = ['Name', 'Age', 'Ethnicity', 'Occupation', 'Income Level', 'Planning Area', 'Round', 'Position', 'Confidence', 'Reasoning', 'Key Concern'];
+    const headers = ['Name', 'Sex', 'Age', 'Education Level', 'Occupation', 'Industry', 'Planning Area', 'Round', 'Position', 'Confidence', 'Reasoning', 'Key Concern'];
     const rows = result.agent_responses.map(r => {
       const p = personaMap[r.persona_id];
       return [
         r.persona_name,
+        p?.sex ?? '',
         p?.age ?? '',
-        p?.ethnicity ?? '',
+        p?.education_level ?? '',
         p?.occupation ?? '',
-        p?.income_level ?? '',
+        p?.industry ?? '',
         p?.planning_area ?? '',
         r.round_number + 1,
         r.position,
@@ -179,7 +140,7 @@ function AnalyticsPanel({ result, numRounds, comparisonResult, personas }) {
     URL.revokeObjectURL(url);
   };
 
-  const { ethnicity: ethBreakdown, income_level: incomeBreakdown } =
+  const { sex: sexBreakdown, education_level: eduBreakdown } =
     result?.demographic_breakdown || {};
 
   function renderDots(group) {
@@ -242,8 +203,8 @@ function AnalyticsPanel({ result, numRounds, comparisonResult, personas }) {
         <div className="analytics-section-title">Responses by demographic group</div>
         <div className="breakdown-grid">
           <div>
-            <div className="breakdown-group-title">By ethnicity</div>
-            {Object.entries(ethBreakdown || {}).map(([group, counts]) => (
+            <div className="breakdown-group-title">By sex</div>
+            {Object.entries(sexBreakdown || {}).map(([group, counts]) => (
               <div key={group} className="breakdown-row">
                 <span className="breakdown-label">{group}</span>
                 <div className="breakdown-dots">
@@ -256,10 +217,10 @@ function AnalyticsPanel({ result, numRounds, comparisonResult, personas }) {
             ))}
           </div>
           <div>
-            <div className="breakdown-group-title">By income level</div>
-            {Object.entries(incomeBreakdown || {}).map(([group, counts]) => (
+            <div className="breakdown-group-title">By education level</div>
+            {Object.entries(eduBreakdown || {}).map(([group, counts]) => (
               <div key={group} className="breakdown-row">
-                <span className="breakdown-label">{INCOME_LABEL[group] || group}</span>
+                <span className="breakdown-label">{group}</span>
                 <div className="breakdown-dots">
                   {renderDots(counts)}
                   <span className="breakdown-counts">
