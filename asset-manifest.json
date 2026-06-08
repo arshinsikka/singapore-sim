@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/singapore-sim/static/css/main.24d43c7d.css",
-    "main.js": "/singapore-sim/static/js/main.63b9b151.js",
+    "main.js": "/singapore-sim/static/js/main.527aeeed.js",
     "static/js/453.20359781.chunk.js": "/singapore-sim/static/js/453.20359781.chunk.js",
     "index.html": "/singapore-sim/index.html",
     "main.24d43c7d.css.map": "/singapore-sim/static/css/main.24d43c7d.css.map",
-    "main.63b9b151.js.map": "/singapore-sim/static/js/main.63b9b151.js.map",
+    "main.527aeeed.js.map": "/singapore-sim/static/js/main.527aeeed.js.map",
     "453.20359781.chunk.js.map": "/singapore-sim/static/js/453.20359781.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.24d43c7d.css",
-    "static/js/main.63b9b151.js"
+    "static/js/main.527aeeed.js"
   ]
 }
