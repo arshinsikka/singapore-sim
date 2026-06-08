@@ -25,22 +25,29 @@ function QuestionSelector({ questions, selectedId, onSelect, customQuestion, onC
         </div>
       ))}
 
-      {/* Custom question option */}
+      {/* Custom question option — disabled placeholder */}
       <div className="custom-question-section">
-        <label className="custom-question-label" htmlFor="custom-question">
+        <label className="custom-question-label">
           Or describe your own policy question
         </label>
-        <span className="custom-question-note">
-          (Custom questions use the diverse population by default)
-        </span>
-        <textarea
-          id="custom-question"
-          className="custom-question-textarea"
-          placeholder="Describe a Singapore policy scenario in plain language…"
-          value={customQuestion}
-          onChange={(e) => onCustomChange(e.target.value)}
-          rows={3}
-        />
+        <div
+          style={{
+            background: '#f0ede8',
+            border: '1.5px solid #e0ddd8',
+            borderRadius: '8px',
+            padding: '0.75rem 1rem',
+            minHeight: '76px',
+            display: 'flex',
+            alignItems: 'center',
+            color: '#a0a0a0',
+            fontStyle: 'italic',
+            fontSize: '0.85rem',
+            cursor: 'default',
+            userSelect: 'none',
+          }}
+        >
+          Custom questions coming soon
+        </div>
       </div>
     </div>
   );

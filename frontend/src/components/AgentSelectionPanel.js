@@ -73,18 +73,54 @@ function PersonaCard({ persona, selected, onToggle }) {
   );
 }
 
+const EDU_FILTER_OPTIONS = [
+  'All',
+  'University',
+  'Post Secondary (Non-Tertiary)',
+  'Other Diploma',
+  'Polytechnic',
+  'Secondary',
+  'Lower Secondary',
+];
+
 function AgentSelectionPanel({ personas, selectedIds, onToggle, onNext }) {
   const [search, setSearch] = useState('');
+  const [ageMin, setAgeMin] = useState(0);
+  const [ageMax, setAgeMax] = useState(100);
+  const [sexFilter, setSexFilter] = useState('All');
+  const [eduFilter, setEduFilter] = useState('All');
+  const [areaFilter, setAreaFilter] = useState('All');
+
+  const uniqueAreas = useMemo(() => {
+    const areas = [...new Set(personas.map(p => p.planning_area).filter(Boolean))].sort();
+    return areas;
+  }, [personas]);
+
+  const handleResetFilters = () => {
+    setAgeMin(0);
+    setAgeMax(100);
+    setSexFilter('All');
+    setEduFilter('All');
+    setAreaFilter('All');
+  };
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
-    if (!q) return personas;
-    return personas.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.occupation.toLowerCase().includes(q) ||
-      p.planning_area.toLowerCase().includes(q)
-    );
-  }, [personas, search]);
+    const minAge = Number(ageMin) || 0;
+    const maxAge = Number(ageMax) || 100;
+    return personas.filter(p => {
+      if (q && !(
+        p.name.toLowerCase().includes(q) ||
+        p.occupation.toLowerCase().includes(q) ||
+        p.planning_area.toLowerCase().includes(q)
+      )) return false;
+      if (p.age < minAge || p.age > maxAge) return false;
+      if (sexFilter !== 'All' && p.sex !== sexFilter) return false;
+      if (eduFilter !== 'All' && p.education_level !== eduFilter) return false;
+      if (areaFilter !== 'All' && p.planning_area !== areaFilter) return false;
+      return true;
+    });
+  }, [personas, search, ageMin, ageMax, sexFilter, eduFilter, areaFilter]);
 
   const handleRandomSelect = () => {
     const sample = getRandomSample(10);
@@ -169,6 +205,156 @@ function AgentSelectionPanel({ personas, selectedIds, onToggle, onNext }) {
             outline: 'none',
           }}
         />
+      </div>
+
+      {/* Filter bar */}
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'flex-end',
+        gap: '1rem',
+        marginBottom: '1rem',
+        padding: '0.75rem 1rem',
+        background: '#f6f4ef',
+        borderRadius: '10px',
+        border: '1px solid #e8e4dc',
+      }}>
+        {/* Age range */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted, #5a6a85)' }}>Age range</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <input
+              type="number"
+              min={0}
+              max={100}
+              value={ageMin}
+              onChange={e => setAgeMin(e.target.value === '' ? 0 : Number(e.target.value))}
+              placeholder="Min"
+              style={{
+                width: '60px',
+                padding: '0.35rem 0.5rem',
+                borderRadius: '6px',
+                border: '1.5px solid #d6d0c8',
+                fontSize: '0.82rem',
+                outline: 'none',
+              }}
+            />
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted, #5a6a85)' }}>–</span>
+            <input
+              type="number"
+              min={0}
+              max={100}
+              value={ageMax}
+              onChange={e => setAgeMax(e.target.value === '' ? 100 : Number(e.target.value))}
+              placeholder="Max"
+              style={{
+                width: '60px',
+                padding: '0.35rem 0.5rem',
+                borderRadius: '6px',
+                border: '1.5px solid #d6d0c8',
+                fontSize: '0.82rem',
+                outline: 'none',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Sex filter */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted, #5a6a85)' }}>Sex</span>
+          <div style={{ display: 'flex', gap: '0.35rem' }}>
+            {['All', 'Male', 'Female'].map(opt => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => setSexFilter(opt)}
+                style={{
+                  padding: '0.3rem 0.7rem',
+                  borderRadius: '999px',
+                  border: '1.5px solid var(--navy, #0a193c)',
+                  background: sexFilter === opt ? 'var(--navy, #0a193c)' : 'transparent',
+                  color: sexFilter === opt ? '#ffffff' : 'var(--navy, #0a193c)',
+                  fontWeight: 600,
+                  fontSize: '0.78rem',
+                  cursor: 'pointer',
+                  transition: 'background 0.12s, color 0.12s',
+                }}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Education level */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted, #5a6a85)' }}>Education level</span>
+          <select
+            value={eduFilter}
+            onChange={e => setEduFilter(e.target.value)}
+            style={{
+              padding: '0.35rem 0.6rem',
+              borderRadius: '6px',
+              border: '1.5px solid #d6d0c8',
+              fontSize: '0.82rem',
+              background: '#ffffff',
+              color: 'var(--navy, #0a193c)',
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            {EDU_FILTER_OPTIONS.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Planning area */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted, #5a6a85)' }}>Planning area</span>
+          <select
+            value={areaFilter}
+            onChange={e => setAreaFilter(e.target.value)}
+            style={{
+              padding: '0.35rem 0.6rem',
+              borderRadius: '6px',
+              border: '1.5px solid #d6d0c8',
+              fontSize: '0.82rem',
+              background: '#ffffff',
+              color: 'var(--navy, #0a193c)',
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            <option value="All">All</option>
+            {uniqueAreas.map(area => (
+              <option key={area} value={area}>{area}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Showing count + reset */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginLeft: 'auto', alignItems: 'flex-end' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted, #5a6a85)' }}>
+            Showing {filtered.length} of {personas.length}
+          </span>
+          <button
+            type="button"
+            onClick={handleResetFilters}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--navy, #0a193c)',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              padding: 0,
+            }}
+          >
+            Reset filters
+          </button>
+        </div>
       </div>
 
       {/* Grid */}

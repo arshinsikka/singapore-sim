@@ -21,6 +21,18 @@ function App() {
   const [result, setResult]                           = useState(null);
   const [loading, setLoading]                         = useState(false);
   const [error, setError]                             = useState(null);
+  const [titleHovered, setTitleHovered]               = useState(false);
+
+  const handleResetToHome = () => {
+    setStep(1);
+    setSelectedPersonaIds(new Set());
+    setResult(null);
+    setSelectedQuestionId(null);
+    setNumRounds(1);
+    setLoading(false);
+    setError(null);
+    setCustomQuestion('');
+  };
 
   const selectedPersonas = ALL_PERSONAS.filter(p => selectedPersonaIds.has(p.id));
 
@@ -95,7 +107,19 @@ function App() {
     <div className="app">
       <header className="app-header">
         <div className="header-inner">
-          <h1 className="header-title">Singapore Society Simulation</h1>
+          <h1
+            className="header-title"
+            onClick={handleResetToHome}
+            onMouseEnter={() => setTitleHovered(true)}
+            onMouseLeave={() => setTitleHovered(false)}
+            style={{
+              cursor: 'pointer',
+              textDecoration: 'none',
+              color: titleHovered ? 'rgba(255,255,255,0.75)' : undefined,
+              transition: 'color 0.15s',
+              userSelect: 'none',
+            }}
+          >Singapore Society Simulation</h1>
           <p className="header-subtitle">How might citizens respond to public policy?</p>
         </div>
         <button

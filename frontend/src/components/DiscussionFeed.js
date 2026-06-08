@@ -110,9 +110,7 @@ function DiscussionFeed({ responses, personas, numRounds }) {
 
   const toggleFilter = (f) => {
     if (f === 'All') { setActiveFilters([]); return; }
-    setActiveFilters(prev =>
-      prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]
-    );
+    setActiveFilters(prev => prev.includes(f) ? [] : [f]);
   };
 
   const filteredThreads = useMemo(() => {

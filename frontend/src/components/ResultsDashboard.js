@@ -79,12 +79,15 @@ function ResultsDashboard({ result, numRounds, personas, question }) {
         </div>
       )}
 
-      <div className="tab-bar">
+      <div
+        className="tab-bar"
+        style={{ position: 'sticky', top: 0, zIndex: 20, background: '#ffffff' }}
+      >
         {tabs.map(tab => (
           <button
             key={tab.id}
             className={`tab-button${activeTab === tab.id ? ' active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => { const id = tab.id; setActiveTab(id); }}
             type="button"
           >
             {tab.label}
@@ -92,7 +95,7 @@ function ResultsDashboard({ result, numRounds, personas, question }) {
         ))}
       </div>
 
-      <div key={activeTab} className="tab-content">
+      <div className="tab-content">
         {activeTab === 'discussion' && (
           result ? (
             <DiscussionFeed

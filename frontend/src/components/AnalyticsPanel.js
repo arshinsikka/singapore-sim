@@ -3,6 +3,15 @@ import Plot from 'react-plotly.js';
 
 const PLOTLY_CONFIG = { displayModeBar: false };
 
+const EDU_ORDER = [
+  'University',
+  'Post Secondary (Non-Tertiary)',
+  'Other Diploma',
+  'Polytechnic',
+  'Secondary',
+  'Lower Secondary',
+];
+
 const LAYOUT_BASE = {
   paper_bgcolor: 'rgba(0,0,0,0)',
   plot_bgcolor:  'rgba(0,0,0,0)',
@@ -161,40 +170,46 @@ function AnalyticsPanel({ result, numRounds, personas }) {
     <div className="analytics-panel">
 
       {/* Chart 1 — Position distribution */}
-      <div className="analytics-chart-wrapper">
+      <div className="analytics-chart-wrapper" style={{ pointerEvents: 'auto' }}>
         <div className="analytics-chart-title">Position distribution</div>
-        <Plot
-          data={positionChartData.data}
-          layout={positionChartData.layout}
-          config={PLOTLY_CONFIG}
-          style={{ width: '100%' }}
-          useResizeHandler
-        />
-      </div>
-
-      {/* Chart 2 — Confidence histogram */}
-      <div className="analytics-chart-wrapper">
-        <div className="analytics-chart-title">How certain were citizens?</div>
-        <Plot
-          data={confidenceChartData.data}
-          layout={confidenceChartData.layout}
-          config={PLOTLY_CONFIG}
-          style={{ width: '100%' }}
-          useResizeHandler
-        />
-      </div>
-
-      {/* Chart 3 — Belief drift (3-round only) */}
-      {driftChartData && (
-        <div className="analytics-chart-wrapper">
-          <div className="analytics-chart-title">Support rate across rounds</div>
+        <div style={{ pointerEvents: 'none' }}>
           <Plot
-            data={driftChartData.data}
-            layout={driftChartData.layout}
+            data={positionChartData.data}
+            layout={positionChartData.layout}
             config={PLOTLY_CONFIG}
             style={{ width: '100%' }}
             useResizeHandler
           />
+        </div>
+      </div>
+
+      {/* Chart 2 — Confidence histogram */}
+      <div className="analytics-chart-wrapper" style={{ pointerEvents: 'auto' }}>
+        <div className="analytics-chart-title">How certain were citizens?</div>
+        <div style={{ pointerEvents: 'none' }}>
+          <Plot
+            data={confidenceChartData.data}
+            layout={confidenceChartData.layout}
+            config={PLOTLY_CONFIG}
+            style={{ width: '100%' }}
+            useResizeHandler
+          />
+        </div>
+      </div>
+
+      {/* Chart 3 — Belief drift (3-round only) */}
+      {driftChartData && (
+        <div className="analytics-chart-wrapper" style={{ pointerEvents: 'auto' }}>
+          <div className="analytics-chart-title">Support rate across rounds</div>
+          <div style={{ pointerEvents: 'none' }}>
+            <Plot
+              data={driftChartData.data}
+              layout={driftChartData.layout}
+              config={PLOTLY_CONFIG}
+              style={{ width: '100%' }}
+              useResizeHandler
+            />
+          </div>
         </div>
       )}
 
@@ -218,17 +233,26 @@ function AnalyticsPanel({ result, numRounds, personas }) {
           </div>
           <div>
             <div className="breakdown-group-title">By education level</div>
-            {Object.entries(eduBreakdown || {}).map(([group, counts]) => (
-              <div key={group} className="breakdown-row">
-                <span className="breakdown-label">{group}</span>
-                <div className="breakdown-dots">
-                  {renderDots(counts)}
-                  <span className="breakdown-counts">
-                    {counts.Support || 0}S · {counts.Oppose || 0}O · {counts.Neutral || 0}N
-                  </span>
+            {Object.entries(eduBreakdown || {})
+              .sort(([a], [b]) => {
+                const ai = EDU_ORDER.indexOf(a);
+                const bi = EDU_ORDER.indexOf(b);
+                if (ai === -1 && bi === -1) return 0;
+                if (ai === -1) return 1;
+                if (bi === -1) return -1;
+                return ai - bi;
+              })
+              .map(([group, counts]) => (
+                <div key={group} className="breakdown-row">
+                  <span className="breakdown-label">{group}</span>
+                  <div className="breakdown-dots">
+                    {renderDots(counts)}
+                    <span className="breakdown-counts">
+                      {counts.Support || 0}S · {counts.Oppose || 0}O · {counts.Neutral || 0}N
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
