@@ -149,8 +149,10 @@ function AnalyticsPanel({ result, numRounds, personas }) {
     URL.revokeObjectURL(url);
   };
 
-  const { sex: sexBreakdown, education_level: eduBreakdown } =
+  const { sex: sexBreakdown, education_level: eduBreakdown, ethnic_group: ethnicBreakdown } =
     result?.demographic_breakdown || {};
+
+  const ETHNIC_ORDER = ['Chinese', 'Malay', 'Indian', 'Others'];
 
   function renderDots(group) {
     if (!group) return null;
@@ -237,6 +239,29 @@ function AnalyticsPanel({ result, numRounds, personas }) {
               .sort(([a], [b]) => {
                 const ai = EDU_ORDER.indexOf(a);
                 const bi = EDU_ORDER.indexOf(b);
+                if (ai === -1 && bi === -1) return 0;
+                if (ai === -1) return 1;
+                if (bi === -1) return -1;
+                return ai - bi;
+              })
+              .map(([group, counts]) => (
+                <div key={group} className="breakdown-row">
+                  <span className="breakdown-label">{group}</span>
+                  <div className="breakdown-dots">
+                    {renderDots(counts)}
+                    <span className="breakdown-counts">
+                      {counts.Support || 0}S · {counts.Oppose || 0}O · {counts.Neutral || 0}N
+                    </span>
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div>
+            <div className="breakdown-group-title">By ethnic group</div>
+            {Object.entries(ethnicBreakdown || {})
+              .sort(([a], [b]) => {
+                const ai = ETHNIC_ORDER.indexOf(a);
+                const bi = ETHNIC_ORDER.indexOf(b);
                 if (ai === -1 && bi === -1) return 0;
                 if (ai === -1) return 1;
                 if (bi === -1) return -1;

@@ -21,7 +21,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Yi Peng Yong"
+    "name": "Yi Peng Yong",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "2fe149f1c59e47daa5e6ae0881ffef93",
@@ -45,7 +46,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Choa Chu Kang",
     "country": "Singapore",
-    "name": "Charmaine"
+    "name": "Charmaine",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "dd95514790e84ffa9973475cfc706660",
@@ -69,7 +71,8 @@
     "industry": "Public Administration & Education Services",
     "planning_area": "Clementi",
     "country": "Singapore",
-    "name": "Betty"
+    "name": "Betty",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "a2d66162e29f420aa93c670a41eb4fd2",
@@ -93,7 +96,8 @@
     "industry": null,
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Jian Choy Ker"
+    "name": "Jian Choy Ker",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "98a3e5752be446ebaca994b8a390b290",
@@ -117,7 +121,8 @@
     "industry": null,
     "planning_area": "Kallang",
     "country": "Singapore",
-    "name": "Aixin Noy Yong"
+    "name": "Aixin Noy Yong",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "dd8154e4d83d4601815fa97bb2374a0e",
@@ -141,7 +146,8 @@
     "industry": "Manufacturing",
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Qijie Huat Chua"
+    "name": "Qijie Huat Chua",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "4072017682754942b6b6718f6e1f1078",
@@ -165,7 +171,8 @@
     "industry": null,
     "planning_area": "Jurong West",
     "country": "Singapore",
-    "name": "Wai Ting Soon"
+    "name": "Wai Ting Soon",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "50645de2208741399847d23a70c99ba8",
@@ -189,7 +196,8 @@
     "industry": "Financial & Insurance Services",
     "planning_area": "Queenstown",
     "country": "Singapore",
-    "name": "Chongyong Ang"
+    "name": "Chongyong Ang",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "d10796d3344a4c69ab28f82467941225",
@@ -213,7 +221,8 @@
     "industry": null,
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Man Tan"
+    "name": "Man Tan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "d24b5f578ae64648ac9fdba6df96dbd3",
@@ -237,7 +246,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Woodlands",
     "country": "Singapore",
-    "name": "Yao Dar Teo"
+    "name": "Yao Dar Teo",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "8f485ae5a10948ae93547aff0d6dfbe9",
@@ -261,7 +271,8 @@
     "industry": null,
     "planning_area": "Bishan",
     "country": "Singapore",
-    "name": "Adele Soon Guek Ho"
+    "name": "Adele Soon Guek Ho",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "30881937a8a74d8d86648a8d644d5c58",
@@ -285,7 +296,8 @@
     "industry": "Professional Services",
     "planning_area": "Kallang",
     "country": "Singapore",
-    "name": "Li Ong"
+    "name": "Li Ong",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "bb114a2e4b544b59969dc7cde175b39a",
@@ -309,7 +321,8 @@
     "industry": null,
     "planning_area": "Ang Mo Kio",
     "country": "Singapore",
-    "name": "Ging Shan Ng"
+    "name": "Ging Shan Ng",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "83c6b8361faa4723b0dd01e819f2df90",
@@ -333,7 +346,8 @@
     "industry": "Manufacturing",
     "planning_area": "Yishun",
     "country": "Singapore",
-    "name": "Sylvia"
+    "name": "Sylvia",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "909898bdd7e045fdb674a3ed84e45f28",
@@ -357,7 +371,8 @@
     "industry": "Information & Communications",
     "planning_area": "Geylang",
     "country": "Singapore",
-    "name": "Sue Yen Sim"
+    "name": "Sue Yen Sim",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "88bf369119dd4a5f8835f8b7532dbaad",
@@ -381,7 +396,8 @@
     "industry": null,
     "planning_area": "Toa Payoh",
     "country": "Singapore",
-    "name": "Si Yun Wong"
+    "name": "Si Yun Wong",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "81d2406971004968a124d9b23392e7d5",
@@ -405,7 +421,8 @@
     "industry": null,
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Han Tan"
+    "name": "Han Tan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "bb1c0c81c8e2404f8ae85893885b6c97",
@@ -429,7 +446,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Bedok",
     "country": "Singapore",
-    "name": "Kong Sim Ho"
+    "name": "Kong Sim Ho",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "f989376a388b4fe49074e23fdbbf5e37",
@@ -453,7 +471,8 @@
     "industry": "Financial & Insurance Services",
     "planning_area": "Choa Chu Kang",
     "country": "Singapore",
-    "name": "May"
+    "name": "May",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "1a7928b09a7b4c5dbf33130a4549e2e5",
@@ -477,7 +496,8 @@
     "industry": null,
     "planning_area": "Outram",
     "country": "Singapore",
-    "name": "Leela"
+    "name": "Leela",
+    "ethnic_group": "Indian"
   },
   {
     "uuid": "ddf1565dd8134c9ca9a99fe8723578f8",
@@ -501,7 +521,8 @@
     "industry": "Professional Services",
     "planning_area": "Tampines",
     "country": "Singapore",
-    "name": "Monica"
+    "name": "Monica",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "2a30bc975f1646328c64f62b0b6fdb69",
@@ -525,7 +546,8 @@
     "industry": null,
     "planning_area": "Kallang",
     "country": "Singapore",
-    "name": "Rene"
+    "name": "Rene",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "c0d6910610234d60806412b722176f39",
@@ -549,7 +571,8 @@
     "industry": null,
     "planning_area": "Punggol",
     "country": "Singapore",
-    "name": "Zainab “Elly” Othman"
+    "name": "Zainab “Elly” Othman",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "f83cb627013647c6be68f6a7f3a0ef17",
@@ -573,7 +596,8 @@
     "industry": null,
     "planning_area": "Punggol",
     "country": "Singapore",
-    "name": "Annie"
+    "name": "Annie",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "0cc5cac8546b4b1e951ce33969209434",
@@ -597,7 +621,8 @@
     "industry": null,
     "planning_area": "Jurong East",
     "country": "Singapore",
-    "name": "Lester"
+    "name": "Lester",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "0ba1c843b50a4fa5b51df46b58156639",
@@ -621,7 +646,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Pasir Ris",
     "country": "Singapore",
-    "name": "Brandon"
+    "name": "Brandon",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "e24be2b97def4408bd143d4bc98e68ec",
@@ -645,7 +671,8 @@
     "industry": null,
     "planning_area": "Punggol",
     "country": "Singapore",
-    "name": "Alice"
+    "name": "Alice",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "3c825748e6d14b46b02e66efe4be7411",
@@ -669,7 +696,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Hougang",
     "country": "Singapore",
-    "name": "Geok Tan"
+    "name": "Geok Tan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "6ca22d2670c84d569b3eae2678c7bbd3",
@@ -693,7 +721,8 @@
     "industry": null,
     "planning_area": "Ang Mo Kio",
     "country": "Singapore",
-    "name": "Michelle"
+    "name": "Michelle",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "493520c4c36b41dcb91a7aa2509fd96a",
@@ -717,7 +746,8 @@
     "industry": "Accommodation & Food Services",
     "planning_area": "Bishan",
     "country": "Singapore",
-    "name": "Sarah"
+    "name": "Sarah",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "e15dc0b2eb8543e48cc8ec91f0437aca",
@@ -741,7 +771,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Muhammad Sipan"
+    "name": "Muhammad Sipan",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "d85ebb8102104caa9f47e0d15281b110",
@@ -765,7 +796,8 @@
     "industry": "Financial & Insurance Services",
     "planning_area": "Pasir Ris",
     "country": "Singapore",
-    "name": "Roslina Arumsari Rehman"
+    "name": "Roslina Arumsari Rehman",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "a7bb2b90187648a6aa640b53c3b027d4",
@@ -789,7 +821,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Pasir Ris",
     "country": "Singapore",
-    "name": "Joshua Rong Tan"
+    "name": "Joshua Rong Tan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "b7ec86b0aacb45ab95cd25505e0d366d",
@@ -813,7 +846,8 @@
     "industry": null,
     "planning_area": "Clementi",
     "country": "Singapore",
-    "name": "Jesslyn"
+    "name": "Jesslyn",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "494fec1143f64a51a42cd4a7e96fde24",
@@ -837,7 +871,8 @@
     "industry": null,
     "planning_area": "Bukit Panjang",
     "country": "Singapore",
-    "name": "Li Ling Ang"
+    "name": "Li Ling Ang",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "d9a136b9f95d4ed69f2b8f1b2609cd6c",
@@ -861,7 +896,8 @@
     "industry": "Public Administration & Education Services",
     "planning_area": "Bukit Panjang",
     "country": "Singapore",
-    "name": "Patricia"
+    "name": "Patricia",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "c1fa855227ab4399938d55dc32b30ac8",
@@ -885,7 +921,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Woodlands",
     "country": "Singapore",
-    "name": "Terence Goh"
+    "name": "Terence Goh",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "d5e01b37fd064c0e82032f32759183c0",
@@ -909,7 +946,8 @@
     "industry": "Health & Social Services",
     "planning_area": "Bukit Timah",
     "country": "Singapore",
-    "name": "Govindaraju Singh Danani"
+    "name": "Govindaraju Singh Danani",
+    "ethnic_group": "Indian"
   },
   {
     "uuid": "533a3788e38640feb6a746b5102c442f",
@@ -933,7 +971,8 @@
     "industry": "Financial & Insurance Services",
     "planning_area": "Hougang",
     "country": "Singapore",
-    "name": "Lin Rong Koh"
+    "name": "Lin Rong Koh",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "e7bdd6a9040341cb88ccbe49a437bc0a",
@@ -957,7 +996,8 @@
     "industry": null,
     "planning_area": "Bedok",
     "country": "Singapore",
-    "name": "Christopher Babu Usha"
+    "name": "Christopher Babu Usha",
+    "ethnic_group": "Indian"
   },
   {
     "uuid": "f00cf143cfc843fca5aaebec0867b34a",
@@ -981,7 +1021,8 @@
     "industry": null,
     "planning_area": "Yishun",
     "country": "Singapore",
-    "name": "Racheal"
+    "name": "Racheal",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "507747c84ab4424a88421fc5855ab3a3",
@@ -1005,7 +1046,8 @@
     "industry": null,
     "planning_area": "Tampines",
     "country": "Singapore",
-    "name": "Ameen Qusairy Letak"
+    "name": "Ameen Qusairy Letak",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "c01ce6f5bb324f9b8c2f0bddf52988d7",
@@ -1029,7 +1071,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Choa Chu Kang",
     "country": "Singapore",
-    "name": "Jolene Cheok"
+    "name": "Jolene Cheok",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "738f9ae57685490bb176ae74faafe163",
@@ -1053,7 +1096,8 @@
     "industry": "Health & Social Services",
     "planning_area": "Jurong West",
     "country": "Singapore",
-    "name": "Jason"
+    "name": "Jason",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "c0cd7fd7785d4167852d7fc9b5bc84ef",
@@ -1077,7 +1121,8 @@
     "industry": "Public Administration & Education Services",
     "planning_area": "Jurong West",
     "country": "Singapore",
-    "name": "Linda"
+    "name": "Linda",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "5d2c6b04edfe4ebc932cad45d5802e55",
@@ -1101,7 +1146,8 @@
     "industry": null,
     "planning_area": "Bedok",
     "country": "Singapore",
-    "name": "Jing Jin Lee"
+    "name": "Jing Jin Lee",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "51dffa6d46ad404bba275072d4bf5c31",
@@ -1125,7 +1171,8 @@
     "industry": null,
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Charmaine"
+    "name": "Charmaine",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "63800822830b4df2a299d7b787b03801",
@@ -1149,7 +1196,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Victor"
+    "name": "Victor",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "af7b85525c2c4a0087ea9f824647b35b",
@@ -1173,7 +1221,8 @@
     "industry": "Community, Social & Personal Services",
     "planning_area": "Novena",
     "country": "Singapore",
-    "name": "Winston"
+    "name": "Winston",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "581230c8d67a4f65b851aee43b74912a",
@@ -1197,7 +1246,8 @@
     "industry": null,
     "planning_area": "Serangoon",
     "country": "Singapore",
-    "name": "Dave"
+    "name": "Dave",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "a20826e8c8e548a29553ebc36e7c4e7c",
@@ -1221,7 +1271,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Toa Payoh",
     "country": "Singapore",
-    "name": "Matthew Yah Chew"
+    "name": "Matthew Yah Chew",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "03d386c2d8484d9fbc2a0991fb586e66",
@@ -1245,7 +1296,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Novena",
     "country": "Singapore",
-    "name": "Huey Chuang Tan"
+    "name": "Huey Chuang Tan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "eb683093e5144442bc3fe9cb10b4e8d5",
@@ -1269,7 +1321,8 @@
     "industry": null,
     "planning_area": "Bedok",
     "country": "Singapore",
-    "name": "Chiah Ang"
+    "name": "Chiah Ang",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "ee66ae90a94244b880db10a74576f8f3",
@@ -1293,7 +1346,8 @@
     "industry": "Financial & Insurance Services",
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Franky"
+    "name": "Franky",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "984132a1cb514173b995b95537b04ac5",
@@ -1317,7 +1371,8 @@
     "industry": "Public Administration & Education Services",
     "planning_area": "Bishan",
     "country": "Singapore",
-    "name": "Ronnie Sian Soo Lim"
+    "name": "Ronnie Sian Soo Lim",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "9c620ce49d9c464397c780e2d30fe3c0",
@@ -1341,7 +1396,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Sengkang",
     "country": "Singapore",
-    "name": "Eugene"
+    "name": "Eugene",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "5638358c20b147338f17db989a7543fb",
@@ -1365,7 +1421,8 @@
     "industry": "Information & Communications",
     "planning_area": "Pasir Ris",
     "country": "Singapore",
-    "name": "Wendy"
+    "name": "Wendy",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "7471dc5ea7cf4abc8b07aa4ed5d7f934",
@@ -1389,7 +1446,8 @@
     "industry": null,
     "planning_area": "Bedok",
     "country": "Singapore",
-    "name": "Amberly"
+    "name": "Amberly",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "d49405835f8a46ce9f1f56401bc3f4c6",
@@ -1413,7 +1471,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Woodlands",
     "country": "Singapore",
-    "name": "Muhammad Ahmad"
+    "name": "Muhammad Ahmad",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "e46d35c837da42d38b323644d229b13c",
@@ -1437,7 +1496,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Pasir Ris",
     "country": "Singapore",
-    "name": "Janet Wang"
+    "name": "Janet Wang",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "ee86b2ca4c7c49b7a1b1a966a43ed715",
@@ -1461,7 +1521,8 @@
     "industry": null,
     "planning_area": "Pasir Ris",
     "country": "Singapore",
-    "name": "Geraldine Tan"
+    "name": "Geraldine Tan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "3765877f8c1f4c9fa60b77af14b71adc",
@@ -1485,7 +1546,8 @@
     "industry": "Manufacturing",
     "planning_area": "Serangoon",
     "country": "Singapore",
-    "name": "Andrea"
+    "name": "Andrea",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "ffa3d6b156f041a598cbde3a87fe38f4",
@@ -1509,7 +1571,8 @@
     "industry": null,
     "planning_area": "Sembawang",
     "country": "Singapore",
-    "name": "Woon Yew Ng"
+    "name": "Woon Yew Ng",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "19782e9cd67448f88b6d672b3022ab93",
@@ -1533,7 +1596,8 @@
     "industry": "Construction",
     "planning_area": "Toa Payoh",
     "country": "Singapore",
-    "name": "Hsing Yong Low"
+    "name": "Hsing Yong Low",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "cc4d1f7ba6e54c3a875f4a838437da30",
@@ -1557,7 +1621,8 @@
     "industry": null,
     "planning_area": "Tampines",
     "country": "Singapore",
-    "name": "Henry"
+    "name": "Henry",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "c590ff6585874e57a139da500a795e9d",
@@ -1581,7 +1646,8 @@
     "industry": "Administrative & Support Services",
     "planning_area": "Bukit Batok",
     "country": "Singapore",
-    "name": "Khadijah Hanifah Bakar"
+    "name": "Khadijah Hanifah Bakar",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "c68d86060feb41e98e9ec6bf10feb412",
@@ -1605,7 +1671,8 @@
     "industry": "Arts, Entertainment & Recreation",
     "planning_area": "Choa Chu Kang",
     "country": "Singapore",
-    "name": "Khi Kee Pok"
+    "name": "Khi Kee Pok",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "16e7142738a44e8ebaa36c67052283dc",
@@ -1629,7 +1696,8 @@
     "industry": "Financial & Insurance Services",
     "planning_area": "Hougang",
     "country": "Singapore",
-    "name": "Nhawfal Adib Abdul Wahab"
+    "name": "Nhawfal Adib Abdul Wahab",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "1fff92da5cd0474d9ddb665a63cb2feb",
@@ -1653,7 +1721,8 @@
     "industry": null,
     "planning_area": "Clementi",
     "country": "Singapore",
-    "name": "Aden"
+    "name": "Aden",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "48f19f7b4d514559b42b327951dad10e",
@@ -1677,7 +1746,8 @@
     "industry": null,
     "planning_area": "Serangoon",
     "country": "Singapore",
-    "name": "Sey Gek Tan"
+    "name": "Sey Gek Tan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "9f36d05229734e8ebcee1de29382512d",
@@ -1701,7 +1771,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Bukit Panjang",
     "country": "Singapore",
-    "name": "Mohamed Safrin Nasruddin"
+    "name": "Mohamed Safrin Nasruddin",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "2b173eb1aed643e7b412600849018bcd",
@@ -1725,7 +1796,8 @@
     "industry": null,
     "planning_area": "Bishan",
     "country": "Singapore",
-    "name": "Kirtida Sidhu"
+    "name": "Kirtida Sidhu",
+    "ethnic_group": "Indian"
   },
   {
     "uuid": "485f404eacbc434bb171e43f1d9e58bc",
@@ -1749,7 +1821,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Jurong East",
     "country": "Singapore",
-    "name": "Li Mary Mei Ping Chan"
+    "name": "Li Mary Mei Ping Chan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "96b69e7bdeba449b9758d81e4b2908b1",
@@ -1773,7 +1846,8 @@
     "industry": null,
     "planning_area": "Ang Mo Kio",
     "country": "Singapore",
-    "name": "Hashim Saputra"
+    "name": "Hashim Saputra",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "3cad0f1f5091415e9a94414726951781",
@@ -1797,7 +1871,8 @@
     "industry": "Community, Social & Personal Services",
     "planning_area": "Tampines",
     "country": "Singapore",
-    "name": "Jeramey"
+    "name": "Jeramey",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "cb2e5d1ec7d6449cb2d54dfbe0010653",
@@ -1821,7 +1896,8 @@
     "industry": "Transportation & Storage",
     "planning_area": "Bukit Panjang",
     "country": "Singapore",
-    "name": "Janice"
+    "name": "Janice",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "023420247b8e4739858122a3b024084f",
@@ -1845,7 +1921,8 @@
     "industry": "Public Administration & Education Services",
     "planning_area": "Toa Payoh",
     "country": "Singapore",
-    "name": "Yuk Cheng Tay"
+    "name": "Yuk Cheng Tay",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "671ac251fac24af0be4392f1f0001869",
@@ -1869,7 +1946,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Bukit Batok",
     "country": "Singapore",
-    "name": "Ming Leong Khoo"
+    "name": "Ming Leong Khoo",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "c7defecb2749484391fb86e87d7e8c6a",
@@ -1893,7 +1971,8 @@
     "industry": null,
     "planning_area": "Jurong West",
     "country": "Singapore",
-    "name": "Terry"
+    "name": "Terry",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "1252105e94c94cfdb49992042ba045d0",
@@ -1917,7 +1996,8 @@
     "industry": null,
     "planning_area": "Clementi",
     "country": "Singapore",
-    "name": "Pamela Tan"
+    "name": "Pamela Tan",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "2ee1b26a5c9843c0a85997cff46b86be",
@@ -1941,7 +2021,8 @@
     "industry": "Information & Communications",
     "planning_area": "Yishun",
     "country": "Singapore",
-    "name": "Andy"
+    "name": "Andy",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "2fbe268191af4ffb885ddfd55f000edb",
@@ -1965,7 +2046,8 @@
     "industry": "Community, Social & Personal Services",
     "planning_area": "Choa Chu Kang",
     "country": "Singapore",
-    "name": "Vivek"
+    "name": "Vivek",
+    "ethnic_group": "Indian"
   },
   {
     "uuid": "c2c9f6608be54ca288c09e7cca1614ea",
@@ -1989,7 +2071,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Hougang",
     "country": "Singapore",
-    "name": "John"
+    "name": "John",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "7cb8e54816784a9c8560657fec5913d3",
@@ -2013,7 +2096,8 @@
     "industry": "Wholesale & Retail Trade",
     "planning_area": "Hougang",
     "country": "Singapore",
-    "name": "Peter Wai Zhu"
+    "name": "Peter Wai Zhu",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "567a96833fbf42cb8008329d1d843c92",
@@ -2037,7 +2121,8 @@
     "industry": "Community, Social & Personal Services",
     "planning_area": "Choa Chu Kang",
     "country": "Singapore",
-    "name": "Rahmat"
+    "name": "Rahmat",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "65f57c17db8e4582b23f30055636f3ab",
@@ -2061,7 +2146,8 @@
     "industry": null,
     "planning_area": "Bedok",
     "country": "Singapore",
-    "name": "Suhaime Ishak"
+    "name": "Suhaime Ishak",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "dc2e57cf62994427883d17859c0afd56",
@@ -2085,7 +2171,8 @@
     "industry": null,
     "planning_area": "Queenstown",
     "country": "Singapore",
-    "name": "Miao Christelle Quek"
+    "name": "Miao Christelle Quek",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "4c088d6eeda5407aa19114733a6ece2f",
@@ -2109,7 +2196,8 @@
     "industry": "Real Estate Services",
     "planning_area": "Serangoon",
     "country": "Singapore",
-    "name": "Nadia"
+    "name": "Nadia",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "5b6e78a6a52f4f608db24eb3fc577d52",
@@ -2133,7 +2221,8 @@
     "industry": null,
     "planning_area": "Punggol",
     "country": "Singapore",
-    "name": "Yong Kian Wee"
+    "name": "Yong Kian Wee",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "d9cae79efd3f4161a8b85a0941ee647d",
@@ -2157,7 +2246,8 @@
     "industry": "Health & Social Services",
     "planning_area": "Choa Chu Kang",
     "country": "Singapore",
-    "name": "Wendy Hui Tay"
+    "name": "Wendy Hui Tay",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "50e4eefeefde497d9b4c632928d6146f",
@@ -2181,7 +2271,8 @@
     "industry": "Public Administration & Education Services",
     "planning_area": "Jurong East",
     "country": "Singapore",
-    "name": "Han Lian Lim"
+    "name": "Han Lian Lim",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "7c68a494f72f49ab83b2eef8bfc52b1f",
@@ -2205,7 +2296,8 @@
     "industry": null,
     "planning_area": "Bukit Merah",
     "country": "Singapore",
-    "name": "Steven"
+    "name": "Steven",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "8fead18b41774aab9fd64b79c908f18b",
@@ -2229,7 +2321,8 @@
     "industry": "Health & Social Services",
     "planning_area": "Queenstown",
     "country": "Singapore",
-    "name": "Tian Xuan Ong"
+    "name": "Tian Xuan Ong",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "4816a9ed94aa4639999112ac2cdd75da",
@@ -2253,7 +2346,8 @@
     "industry": null,
     "planning_area": "Jurong West",
     "country": "Singapore",
-    "name": "Andrew"
+    "name": "Andrew",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "0fb58a5cf8424daa9de5e4e6dde832a2",
@@ -2277,7 +2371,8 @@
     "industry": "Manufacturing",
     "planning_area": "Sembawang",
     "country": "Singapore",
-    "name": "Isa"
+    "name": "Isa",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "4322b2cb89a14fb2ab63dbe32f9acadb",
@@ -2301,7 +2396,8 @@
     "industry": "Construction",
     "planning_area": "Sembawang",
     "country": "Singapore",
-    "name": "Jeffrey"
+    "name": "Jeffrey",
+    "ethnic_group": "Others"
   },
   {
     "uuid": "b0db146cebb84e21b62a587f531204df",
@@ -2325,7 +2421,8 @@
     "industry": null,
     "planning_area": "Novena",
     "country": "Singapore",
-    "name": "Lay Foong Ng"
+    "name": "Lay Foong Ng",
+    "ethnic_group": "Chinese"
   },
   {
     "uuid": "613639c371ac4358985432899f62b502",
@@ -2349,7 +2446,8 @@
     "industry": "Financial & Insurance Services",
     "planning_area": "Yishun",
     "country": "Singapore",
-    "name": "Aswira Hassan Medan"
+    "name": "Aswira Hassan Medan",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "e77b7b2400234015b878edc78e24add7",
@@ -2373,7 +2471,8 @@
     "industry": null,
     "planning_area": "Serangoon",
     "country": "Singapore",
-    "name": "Manaf Rahim Zakaria"
+    "name": "Manaf Rahim Zakaria",
+    "ethnic_group": "Malay"
   },
   {
     "uuid": "a2549e3b44bd4d839e85e21940169d80",
@@ -2397,6 +2496,7 @@
     "industry": null,
     "planning_area": "Choa Chu Kang",
     "country": "Singapore",
-    "name": "Xinmei Eleanor Chia"
+    "name": "Xinmei Eleanor Chia",
+    "ethnic_group": "Chinese"
   }
 ]

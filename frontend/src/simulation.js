@@ -370,11 +370,11 @@ export function computeAggregate(responses) {
 export function computeDemographicBreakdown(responses, personas) {
   const personaMap = {};
   for (const p of personas) personaMap[p.id] = p;
-  const breakdown = { sex: {}, education_level: {} };
+  const breakdown = { sex: {}, education_level: {}, ethnic_group: {} };
   for (const r of responses) {
     const p = personaMap[r.persona_id];
     if (!p) continue;
-    for (const [dim, key] of [["sex", p.sex], ["education_level", p.education_level]]) {
+    for (const [dim, key] of [["sex", p.sex], ["education_level", p.education_level], ["ethnic_group", p.ethnic_group || 'Others']]) {
       if (!breakdown[dim][key]) {
         breakdown[dim][key] = { Support: 0, Oppose: 0, Neutral: 0, total: 0 };
       }

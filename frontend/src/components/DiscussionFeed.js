@@ -28,7 +28,7 @@ function FeedPost({ response, persona, isLast, round1Position }) {
           <span className="thread-name">{response.persona_name}</span>
           {persona && (
             <span className="thread-meta">
-              {persona.sex} · {persona.age} · {persona.marital_status} · {persona.education_level} · {persona.occupation} · {persona.industry} · {persona.planning_area}
+              {persona.sex} · {persona.age} · {persona.marital_status} · {persona.ethnic_group} · {persona.education_level} · {persona.occupation} · {persona.industry} · {persona.planning_area}
             </span>
           )}
           <span className="thread-round-pill">Round {response.round_number + 1}</span>
@@ -89,8 +89,11 @@ function FeedPost({ response, persona, isLast, round1Position }) {
   );
 }
 
+const ETHNIC_FILTERS = ['Chinese', 'Malay', 'Indian', 'Others'];
+
 function DiscussionFeed({ responses, personas, numRounds }) {
   const [activeFilters, setActiveFilters] = useState([]);
+  const [activeEthnicFilter, setActiveEthnicFilter] = useState('All');
 
   const personaMap = useMemo(() => {
     const map = {};
@@ -113,13 +116,24 @@ function DiscussionFeed({ responses, personas, numRounds }) {
     setActiveFilters(prev => prev.includes(f) ? [] : [f]);
   };
 
+  const toggleEthnicFilter = (f) => {
+    setActiveEthnicFilter(prev => prev === f ? 'All' : f);
+  };
+
   const filteredThreads = useMemo(() => {
-    if (!activeFilters.length) return agentThreads;
+    const hasPosFilter = activeFilters.length > 0;
+    const hasEthnicFilter = activeEthnicFilter !== 'All';
+    if (!hasPosFilter && !hasEthnicFilter) return agentThreads;
     return agentThreads.filter(thread => {
       const latest = thread[thread.length - 1];
-      return activeFilters.includes(latest.position);
+      if (hasPosFilter && !activeFilters.includes(latest.position)) return false;
+      if (hasEthnicFilter) {
+        const persona = personaMap[latest.persona_id];
+        if ((persona?.ethnic_group || 'Others') !== activeEthnicFilter) return false;
+      }
+      return true;
     });
-  }, [agentThreads, activeFilters]);
+  }, [agentThreads, activeFilters, activeEthnicFilter, personaMap]);
 
   const allFilterLabels = ['All', ...POS_FILTERS];
 
@@ -134,6 +148,21 @@ function DiscussionFeed({ responses, personas, numRounds }) {
               activeFilters.includes(f) ? ' active' : ''
             }`}
             onClick={() => toggleFilter(f)}
+            type="button"
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+      <div className="feed-filter-bar" style={{ marginTop: '0.5rem', alignItems: 'center' }}>
+        <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted, #5a6a85)', marginRight: '0.25rem', whiteSpace: 'nowrap' }}>
+          By ethnicity:
+        </span>
+        {['All', ...ETHNIC_FILTERS].map(f => (
+          <button
+            key={f}
+            className={`filter-pill${activeEthnicFilter === f ? ' active' : ''}`}
+            onClick={() => toggleEthnicFilter(f)}
             type="button"
           >
             {f}

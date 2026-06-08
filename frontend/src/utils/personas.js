@@ -11,6 +11,7 @@ export function formatPersona(raw) {
     occupation: raw.occupation,
     industry: raw.industry,
     planning_area: raw.planning_area,
+    ethnic_group: raw.ethnic_group || 'Others',
     persona: raw.persona,
     cultural_background: raw.cultural_background,
   };

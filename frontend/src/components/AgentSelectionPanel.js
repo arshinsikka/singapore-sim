@@ -49,6 +49,7 @@ function PersonaCard({ persona, selected, onToggle }) {
       </div>
       <div style={{ fontSize: '0.78rem', color: '#2c3e50' }}>{persona.occupation}</div>
       <div style={{ fontSize: '0.78rem', color: 'var(--text-muted, #5a6a85)' }}>{persona.planning_area}</div>
+      <div style={{ fontSize: '0.78rem', color: 'var(--text-muted, #5a6a85)' }}>{persona.ethnic_group}</div>
 
       {expanded && (
         <div
@@ -90,10 +91,17 @@ function AgentSelectionPanel({ personas, selectedIds, onToggle, onNext }) {
   const [sexFilter, setSexFilter] = useState('All');
   const [eduFilter, setEduFilter] = useState('All');
   const [areaFilter, setAreaFilter] = useState('All');
+  const [maritalFilter, setMaritalFilter] = useState('All');
+  const [ethnicFilter, setEthnicFilter] = useState('All');
 
   const uniqueAreas = useMemo(() => {
     const areas = [...new Set(personas.map(p => p.planning_area).filter(Boolean))].sort();
     return areas;
+  }, [personas]);
+
+  const uniqueMaritalStatuses = useMemo(() => {
+    const statuses = [...new Set(personas.map(p => p.marital_status).filter(Boolean))].sort();
+    return statuses;
   }, [personas]);
 
   const handleResetFilters = () => {
@@ -102,6 +110,8 @@ function AgentSelectionPanel({ personas, selectedIds, onToggle, onNext }) {
     setSexFilter('All');
     setEduFilter('All');
     setAreaFilter('All');
+    setMaritalFilter('All');
+    setEthnicFilter('All');
   };
 
   const filtered = useMemo(() => {
@@ -118,9 +128,11 @@ function AgentSelectionPanel({ personas, selectedIds, onToggle, onNext }) {
       if (sexFilter !== 'All' && p.sex !== sexFilter) return false;
       if (eduFilter !== 'All' && p.education_level !== eduFilter) return false;
       if (areaFilter !== 'All' && p.planning_area !== areaFilter) return false;
+      if (maritalFilter !== 'All' && p.marital_status !== maritalFilter) return false;
+      if (ethnicFilter !== 'All' && p.ethnic_group !== ethnicFilter) return false;
       return true;
     });
-  }, [personas, search, ageMin, ageMax, sexFilter, eduFilter, areaFilter]);
+  }, [personas, search, ageMin, ageMax, sexFilter, eduFilter, areaFilter, maritalFilter, ethnicFilter]);
 
   const handleRandomSelect = () => {
     const sample = getRandomSample(10);
@@ -331,6 +343,57 @@ function AgentSelectionPanel({ personas, selectedIds, onToggle, onNext }) {
               <option key={area} value={area}>{area}</option>
             ))}
           </select>
+        </div>
+
+        {/* Marital status */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted, #5a6a85)' }}>Marital status</span>
+          <select
+            value={maritalFilter}
+            onChange={e => setMaritalFilter(e.target.value)}
+            style={{
+              padding: '0.35rem 0.6rem',
+              borderRadius: '6px',
+              border: '1.5px solid #d6d0c8',
+              fontSize: '0.82rem',
+              background: '#ffffff',
+              color: 'var(--navy, #0a193c)',
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            <option value="All">All</option>
+            {uniqueMaritalStatuses.map(s => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Ethnic group */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted, #5a6a85)' }}>Ethnic group</span>
+          <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+            {['All', 'Chinese', 'Malay', 'Indian', 'Others'].map(opt => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => setEthnicFilter(opt)}
+                style={{
+                  padding: '0.3rem 0.7rem',
+                  borderRadius: '999px',
+                  border: '1.5px solid var(--navy, #0a193c)',
+                  background: ethnicFilter === opt ? 'var(--navy, #0a193c)' : 'transparent',
+                  color: ethnicFilter === opt ? '#ffffff' : 'var(--navy, #0a193c)',
+                  fontWeight: 600,
+                  fontSize: '0.78rem',
+                  cursor: 'pointer',
+                  transition: 'background 0.12s, color 0.12s',
+                }}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Showing count + reset */}

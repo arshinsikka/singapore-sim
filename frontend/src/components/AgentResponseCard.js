@@ -31,6 +31,7 @@ function AgentResponseCard({ response, persona }) {
           <div className="agent-card-detail">
             {persona.sex} · Age {persona.age}
             <br />{persona.marital_status}
+            <br />{persona.ethnic_group}
             <br />{persona.education_level}
             <br />{persona.occupation}
             <br />{persona.planning_area}
