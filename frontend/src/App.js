@@ -7,7 +7,7 @@ import ResultsDashboard    from './components/ResultsDashboard';
 import AgentSelectionPanel from './components/AgentSelectionPanel';
 import ApiKeyModal         from './components/ApiKeyModal';
 
-import { ALL_PERSONAS, POLICY_QUESTIONS, runSimulation } from './simulation';
+import { ALL_PERSONAS, POLICY_QUESTIONS, runSimulation, buildThreadTree } from './simulation';
 
 function App() {
   const [apiKey, setApiKey]                           = useState(null);
@@ -84,7 +84,7 @@ function App() {
     setResult(null);
     try {
       const data = await runSimulation(selectedQuestionId, selectedPersonas, numRounds, apiKey, model);
-      setResult(data);
+setResult(data);
     } catch {
       setError('Something went wrong — please try again. Check your network connection.');
     } finally {

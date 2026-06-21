@@ -160,8 +160,8 @@ export const POLICY_QUESTIONS = [
   },
 ];
 
-export function buildMessages(persona, question, ownPrior, othersSummary, roundNumber) {
-  const system =
+export function buildMessages(persona, question, threadContext, roundNumber) {
+  const personaIntro =
     `You are ${persona.name}, a ${persona.age}-year-old ${(persona.sex || '').toLowerCase()} ` +
     `living in ${persona.planning_area}, Singapore. ` +
     `Your marital status is ${persona.marital_status}. ` +
@@ -174,50 +174,68 @@ export function buildMessages(persona, question, ownPrior, othersSummary, roundN
     "Reason and respond ONLY as this specific person based on your lived experience, " +
     "background, and the persona and cultural background described above. " +
     "Never break character. Never give generic or balanced policy-analyst answers. " +
-    "Your opinion is personal, rooted in your daily life, and may be imperfect or biased — that is authentic. " +
+    "Your opinion is personal, rooted in your daily life, and may be imperfect or biased — that is authentic.";
+
+  if (roundNumber === 0) {
+    const system =
+      personaIntro +
+      "\n\n" +
+      "You must respond only in valid JSON with exactly these fields: " +
+      "position (one of: Support, Oppose, Neutral), " +
+      "confidence (integer 0-100), " +
+      "reasoning (2-3 sentences in your own voice as this person), " +
+      "key_concern (one specific concern driving your view). " +
+      "No preamble, no markdown, only the JSON object.";
+
+    const user =
+      `Policy question: ${question.title}\n\n` +
+      `Description: ${question.description}\n\n` +
+      `Context: ${question.context}`;
+
+    return [
+      { role: "system", content: system },
+      { role: "user", content: user },
+    ];
+  }
+
+  // Round N > 0: threaded reply mode
+  const system =
+    personaIntro +
+    "\n\n" +
+    `You are in round ${roundNumber} of a threaded policy discussion. ` +
+    "You will read what others said in the previous round and reply to the ONE post that provokes " +
+    "your strongest reaction — either because you strongly agree and want to build on it, or strongly " +
+    "disagree and want to rebut it." +
     "\n\n" +
     "You must respond only in valid JSON with exactly these fields: " +
     "position (one of: Support, Oppose, Neutral), " +
     "confidence (integer 0-100), " +
-    "reasoning (2-3 sentences in your own voice as this person), " +
-    "key_concern (one specific concern driving your view). " +
-    "No preamble, no markdown, only the JSON object." +
-    (ownPrior
-      ? `\n\nYou are in round ${roundNumber + 1} of a multi-round deliberation. ` +
-        `You MUST begin your reasoning field by explicitly stating "In the previous round, I ` +
-        `${ownPrior.position === 'Support' ? 'supported' : ownPrior.position === 'Oppose' ? 'opposed' : 'was neutral about'} ` +
-        `this policy because [brief restatement]." ` +
-        `Then you must directly respond to what the other agents said before explaining your current position. ` +
-        `Failure to reference your prior view and others' views is not acceptable.`
-      : "");
+    "reasoning (2-3 sentences in your own voice as this person, responding directly to the post you chose), " +
+    "key_concern (one specific concern driving your view), " +
+    "replying_to_post_number (integer — the number of the post you are replying to), " +
+    "stance_towards_parent (one of: agrees, disagrees). " +
+    "No preamble, no markdown, only the JSON object.";
 
-  const userParts = [];
+  const postList = (threadContext || [])
+    .map((post, idx) =>
+      `Post ${idx + 1} — ${post.persona_name} (${post.position}):\n${post.reasoning}`
+    )
+    .join("\n\n");
 
-  if (ownPrior) {
-    userParts.push(
-      `=== YOUR PREVIOUS POSITION ===\n` +
-      `Position: ${ownPrior.position}\n` +
-      `What you said: ${ownPrior.reasoning}\n` +
-      `Your concern: ${ownPrior.key_concern}\n\n` +
-      `=== WHAT OTHER AGENTS SAID ===\n` +
-      `${othersSummary || 'No summary available.'}\n\n` +
-      `=== POLICY QUESTION ===\n` +
-      `${question.title}\n\n` +
-      `${question.description}\n\n` +
-      `${question.context}\n\n` +
-      `Now respond. You MUST start your reasoning by referencing your previous position and what others said.`
-    );
-  } else {
-    userParts.push(
-      `Policy question: ${question.title}\n\n` +
-      `Description: ${question.description}\n\n` +
-      `Context: ${question.context}`
-    );
-  }
+  const user =
+    `Policy question: ${question.title}\n\n` +
+    `Description: ${question.description}\n\n` +
+    `Context: ${question.context}\n\n` +
+    `=== POSTS FROM THE PREVIOUS ROUND ===\n\n` +
+    postList +
+    "\n\n" +
+    "Pick exactly one post by its number to reply to. " +
+    "State the number you are replying to, whether you agree or disagree with it, " +
+    "then give your own position and reasoning, responding directly to that specific post's argument.";
 
   return [
     { role: "system", content: system },
-    { role: "user", content: userParts.join("\n\n") },
+    { role: "user", content: user },
   ];
 }
 
@@ -269,40 +287,12 @@ export async function callLLM(messages, apiKey, model = "gpt-4o-mini") {
   throw new Error("Could not parse JSON from model response");
 }
 
-export async function buildOthersSummary(allResponses, currentPersonaId, upToRound, apiKey, model = "gpt-4o-mini") {
-  if (upToRound < 0 || !allResponses.length) return null;
-  const others = allResponses.filter(
-    r => r.persona_id !== currentPersonaId && r.round_number <= upToRound
-  );
-  if (!others.length) return null;
+export async function getAgentResponse(persona, question, threadContext, roundNumber, apiKey, model = "gpt-4o-mini") {
+  const postId = `${persona.id}-r${roundNumber}`;
+  const messages = buildMessages(persona, question, threadContext, roundNumber);
 
-  const byPosition = { Support: [], Oppose: [], Neutral: [] };
-  for (const r of others) {
-    if (r.key_concern) byPosition[r.position].push(r.key_concern);
-  }
-
-  const narrativeParts = [];
-  for (const position of ['Support', 'Oppose', 'Neutral']) {
-    const concerns = byPosition[position];
-    if (concerns.length === 0) continue;
-    const prompt = [{
-      role: "user",
-      content: `The following agents ${position} this policy. Summarise their key concerns in 2-3 sentences: ${concerns.join('; ')}.`,
-    }];
-    try {
-      const text = await fetchLLMRaw(prompt, apiKey, model, 200);
-      if (text.trim()) narrativeParts.push(text.trim());
-    } catch (_) {
-      narrativeParts.push(`${position}: ${concerns.join('; ')}`);
-    }
-  }
-
-  return narrativeParts.length ? narrativeParts.join(' ') : null;
-}
-
-export async function getAgentResponse(persona, question, ownPrior, othersSummary, roundNumber, apiKey, model = "gpt-4o-mini") {
-  const messages = buildMessages(persona, question, ownPrior, othersSummary, roundNumber);
   const fallback = {
+    id: postId,
     persona_id: persona.id,
     persona_name: persona.name,
     position: "Neutral",
@@ -311,7 +301,8 @@ export async function getAgentResponse(persona, question, ownPrior, othersSummar
     reasoning: "Unable to parse response",
     key_concern: "Unknown",
     round_number: roundNumber,
-    own_prior: ownPrior,
+    parent_id: null,
+    stance_towards_parent: null,
   };
 
   let data;
@@ -331,7 +322,33 @@ export async function getAgentResponse(persona, question, ownPrior, othersSummar
     let confidence = parseInt(data.confidence ?? 50, 10);
     if (isNaN(confidence)) confidence = 50;
     confidence = Math.max(0, Math.min(100, confidence));
+
+    let parent_id = null;
+    let stance_towards_parent = null;
+
+    if (roundNumber > 0 && Array.isArray(threadContext) && threadContext.length > 0) {
+      const replyNum = parseInt(data.replying_to_post_number, 10);
+      const stance = data.stance_towards_parent;
+
+      if (!isNaN(replyNum) && replyNum >= 1 && replyNum <= threadContext.length) {
+        parent_id = threadContext[replyNum - 1].id;
+      } else {
+        console.warn(
+          `[simulation] Agent ${persona.name} returned invalid replying_to_post_number: ${data.replying_to_post_number}. Defaulting parent_id to null.`
+        );
+      }
+
+      if (stance === "agrees" || stance === "disagrees") {
+        stance_towards_parent = stance;
+      } else {
+        console.warn(
+          `[simulation] Agent ${persona.name} returned invalid stance_towards_parent: ${data.stance_towards_parent}. Defaulting to null.`
+        );
+      }
+    }
+
     return {
+      id: postId,
       persona_id: persona.id,
       persona_name: persona.name,
       position,
@@ -340,7 +357,8 @@ export async function getAgentResponse(persona, question, ownPrior, othersSummar
       reasoning: String(data.reasoning || ""),
       key_concern: String(data.key_concern || ""),
       round_number: roundNumber,
-      own_prior: ownPrior,
+      parent_id,
+      stance_towards_parent,
     };
   } catch (_) {
     return fallback;
@@ -385,22 +403,33 @@ export function computeDemographicBreakdown(responses, personas) {
   return breakdown;
 }
 
-export function summariseRound(responses, personas, apiKey) {
-  const agg = computeAggregate(responses);
-  const counts = agg.position_counts;
-  const total = responses.length;
-  const supportN = counts.Support || 0;
-  const opposeN = counts.Oppose || 0;
-  const neutralN = counts.Neutral || 0;
-  const supportConcerns = responses.filter(r => r.position === "Support").map(r => r.key_concern);
-  const opposeConcerns = responses.filter(r => r.position === "Oppose").map(r => r.key_concern);
-  return (
-    `${supportN} out of ${total} people supported this policy` +
-    (supportConcerns.length > 0 ? `, mainly citing: ${supportConcerns[0]}` : "") +
-    `. ${opposeN} opposed it` +
-    (opposeConcerns.length > 0 ? `, mostly concerned about: ${opposeConcerns[0]}` : "") +
-    `. ${neutralN} remained undecided.`
-  );
+export function computeAgreementCounts(responses, roundNumber) {
+  const roundPosts = responses.filter(r => r.round_number === roundNumber);
+  const counts = {};
+  for (const post of roundPosts) {
+    counts[post.id] = roundPosts.filter(
+      other => other.id !== post.id && other.position === post.position
+    ).length;
+  }
+  return counts;
+}
+
+export function buildThreadTree(allResponses) {
+  const byId = {};
+  for (const r of allResponses) byId[r.id] = { ...r, replies: [] };
+
+  const roots = [];
+  for (const r of allResponses) {
+    const node = byId[r.id];
+    if (r.parent_id === null || r.parent_id === undefined) {
+      roots.push(node);
+    } else if (byId[r.parent_id]) {
+      byId[r.parent_id].replies.push(node);
+    } else {
+      roots.push(node);
+    }
+  }
+  return roots;
 }
 
 export async function runSimulation(questionId, selectedPersonas, numRounds, apiKey, model = "gpt-4o-mini") {
@@ -408,20 +437,19 @@ export async function runSimulation(questionId, selectedPersonas, numRounds, api
   if (!question) throw new Error(`Question '${questionId}' not found.`);
 
   const allResponses = [];
-  const agentPriorResponses = {};
 
   for (let roundNum = 0; roundNum < numRounds; roundNum++) {
+    const threadContext = roundNum === 0
+      ? null
+      : allResponses.filter(r => r.round_number === roundNum - 1);
+
     const roundResponses = await Promise.all(
-      selectedPersonas.map(async p => {
-        const ownPrior = agentPriorResponses[p.id] || null;
-        const othersSummary = await buildOthersSummary(allResponses, p.id, roundNum - 1, apiKey, model);
-        return getAgentResponse(p, question, ownPrior, othersSummary, roundNum, apiKey, model);
-      })
+      selectedPersonas.map(p =>
+        getAgentResponse(p, question, threadContext, roundNum, apiKey, model)
+      )
     );
+
     allResponses.push(...roundResponses);
-    for (const resp of roundResponses) {
-      agentPriorResponses[resp.persona_id] = resp;
-    }
   }
 
   const latestRound = allResponses.length > 0 ? Math.max(...allResponses.map(r => r.round_number)) : 0;
