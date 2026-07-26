@@ -1,3 +1,13 @@
+import hdbMopComments from '../hdb_mop_comments.json';
+import pwmComments from '../pwm_comments.json';
+import foreignWorkerComments from '../foreign_worker_comments.json';
+
+const STATIC_COMMENTS = {
+  '16ls1e0': hdbMopComments,
+  '1as8vh7': pwmComments,
+  '1j4tk8l': foreignWorkerComments,
+};
+
 export const REDDIT_POSTS = {
   hdb_mop_extension: {
     post_id: "16ls1e0",
@@ -24,29 +34,17 @@ export const REDDIT_POSTS = {
 
 export async function fetchRedditComments(post_id) {
   try {
-    const redditURL = `https://www.reddit.com/r/singapore/comments/${post_id}.json?limit=50&sort=top`;
-    const res = await fetch('https://singapore-sim-proxy.sikka-arshin.workers.dev', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'X-Reddit-URL': redditURL
-      }
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
+    const data = STATIC_COMMENTS[post_id];
+    if (!data) return [];
     const children = data[1]?.data?.children || [];
     return children
       .map(c => c.data)
-      .filter(d =>
-        d.body &&
-        d.body !== '[deleted]' &&
-        d.body !== '[removed]' &&
-        d.author !== 'AutoModerator'
-      )
+      .filter(c => c.body && c.body !== '[deleted]' && c.body !== '[removed]' && c.author !== 'AutoModerator')
       .sort((a, b) => b.score - a.score)
       .slice(0, 50)
-      .map(d => ({ author: d.author, body: d.body, score: d.score }));
-  } catch (_) {
+      .map(c => ({ author: c.author, body: c.body, score: c.score }));
+  } catch (err) {
+    console.error('Failed to parse Reddit comments:', err);
     return [];
   }
 }
