@@ -233,6 +233,8 @@ setResult(data);
                   numRounds={numRounds}
                   personas={selectedPersonas}
                   question={selectedQuestion}
+                  selectedQuestionId={selectedQuestionId}
+                  apiKey={apiKey}
                 />
               )}
             </div>

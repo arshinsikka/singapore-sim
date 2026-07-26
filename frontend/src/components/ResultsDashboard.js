@@ -1,6 +1,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import DiscussionFeed from './DiscussionFeed';
 import AnalyticsPanel from './AnalyticsPanel';
+import CalibrationPanel from './CalibrationPanel';
+import { REDDIT_POSTS, fetchRedditComments, classifyRedditComments } from '../utils/redditData';
 
 function makeSummary(support_pct, oppose_pct, neutral_pct, total) {
   if (!total) return null;
@@ -14,12 +16,22 @@ function makeSummary(support_pct, oppose_pct, neutral_pct, total) {
   return `${n} out of ${total} citizens were neutral on this policy`;
 }
 
-function ResultsDashboard({ result, numRounds, personas, question }) {
+function ResultsDashboard({ result, numRounds, personas, question, selectedQuestionId, apiKey }) {
   const [activeTab, setActiveTab] = useState('discussion');
+  const [calibrationLoading, setCalibrationLoading]   = useState(false);
+  const [calibrationLoaded,  setCalibrationLoaded]    = useState(false);
+  const [classifiedComments, setClassifiedComments]   = useState([]);
 
   useEffect(() => {
     if (result) setActiveTab('discussion');
   }, [result]);
+
+  // Reset calibration whenever the question changes
+  useEffect(() => {
+    setCalibrationLoaded(false);
+    setCalibrationLoading(false);
+    setClassifiedComments([]);
+  }, [selectedQuestionId]);
 
   const latestRound = useMemo(() => {
     if (!result?.agent_responses?.length) return 0;
@@ -36,9 +48,27 @@ function ResultsDashboard({ result, numRounds, personas, question }) {
   const total   = latestResponses.length;
   const summary = result ? makeSummary(support_pct, oppose_pct, neutral_pct, total) : null;
 
+  const redditPost = selectedQuestionId ? REDDIT_POSTS[selectedQuestionId] : null;
+
+  const handleCalibrationTab = async () => {
+    setActiveTab('calibration');
+    if (calibrationLoaded || calibrationLoading || !redditPost || !result) return;
+
+    setCalibrationLoading(true);
+    try {
+      const comments    = await fetchRedditComments(redditPost.post_id);
+      const enriched    = await classifyRedditComments(comments, question?.title || '', apiKey);
+      setClassifiedComments(enriched);
+    } finally {
+      setCalibrationLoaded(true);
+      setCalibrationLoading(false);
+    }
+  };
+
   const tabs = [
-    { id: 'discussion', label: 'Discussion' },
-    { id: 'analytics',  label: 'Analytics' },
+    { id: 'discussion',   label: 'Discussion',  onClick: () => setActiveTab('discussion') },
+    { id: 'analytics',    label: 'Analytics',   onClick: () => setActiveTab('analytics') },
+    { id: 'calibration',  label: 'Calibration', onClick: handleCalibrationTab },
   ];
 
   return (
@@ -83,16 +113,21 @@ function ResultsDashboard({ result, numRounds, personas, question }) {
         className="tab-bar"
         style={{ position: 'sticky', top: 0, zIndex: 20, background: '#ffffff' }}
       >
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            className={`tab-button${activeTab === tab.id ? ' active' : ''}`}
-            onClick={() => { const id = tab.id; setActiveTab(id); }}
-            type="button"
-          >
-            {tab.label}
-          </button>
-        ))}
+        {tabs.map(tab => {
+          const isCalibration = tab.id === 'calibration';
+          const disabled = isCalibration && !redditPost;
+          return (
+            <button
+              key={tab.id}
+              className={`tab-button${activeTab === tab.id ? ' active' : ''}`}
+              onClick={disabled ? undefined : tab.onClick}
+              type="button"
+              style={disabled ? { opacity: 0.4, cursor: 'not-allowed' } : undefined}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       <div className="tab-content">
@@ -117,6 +152,21 @@ function ResultsDashboard({ result, numRounds, personas, question }) {
             />
           ) : (
             <div className="tab-empty-state">Run a simulation to see analytics.</div>
+          )
+        )}
+
+        {activeTab === 'calibration' && (
+          !redditPost ? (
+            <div className="tab-empty-state">No Reddit calibration data available for this question.</div>
+          ) : !result ? (
+            <div className="tab-empty-state">Run a simulation first to enable calibration.</div>
+          ) : (
+            <CalibrationPanel
+              redditPost={redditPost}
+              classifiedComments={classifiedComments}
+              simulationResult={result}
+              loading={calibrationLoading}
+            />
           )
         )}
       </div>
